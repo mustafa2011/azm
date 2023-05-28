@@ -1418,11 +1418,10 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
 
   Widget buildInvoiceDate() => TextFormField(
     controller: _date,
-    readOnly: true,
-    onTap: _selectDate,
     style: fontStyle,
     decoration: InputDecoration(
       labelText: language == 'Arabic' ? 'التاريخ' : 'Date',
+      prefixIcon: InkWell(onTap: _selectDate, child: const Icon(Icons.date_range),),
     ),
     validator: (invoiceNo) =>
     invoiceNo == null || invoiceNo == '' ? 'يجب إدخال التاريخ' : null,
@@ -1832,13 +1831,14 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
   );
 
   _selectDate() async {
+    String invoiceTime = Utils.invoiceTime(_date.text);
     DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime(2021),
         lastDate: DateTime(2055));
     if (picked != null) {
-      setState(() => _date.text = Utils.formatDate(picked).toString());
+      setState(() => _date.text = '${Utils.formatDate(picked).toString()} $invoiceTime');
     }
   }
 

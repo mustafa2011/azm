@@ -46,52 +46,6 @@ class InvoiceTemp1 {
     return PdfApi.previewDocument(invoice: invoice, pdf: pdf);
   }
 
-  static String arabicNumber(String number) {
-    String res = '';
-
-    final arabic = [
-      '٠',
-      '١',
-      '٢',
-      '٣',
-      '٤',
-      '٥',
-      '٦',
-      '٧',
-      '٨',
-      '٩',
-      '،',
-      ',',
-      ':',
-      '-',
-      '/',
-      ' ',
-      'AM',
-      'PM'
-    ];
-    for (int i = 0; i < number.length; i++) {
-      if (number[i] == '0') res += arabic[0];
-      if (number[i] == '1') res += arabic[1];
-      if (number[i] == '2') res += arabic[2];
-      if (number[i] == '3') res += arabic[3];
-      if (number[i] == '4') res += arabic[4];
-      if (number[i] == '5') res += arabic[5];
-      if (number[i] == '6') res += arabic[6];
-      if (number[i] == '7') res += arabic[7];
-      if (number[i] == '8') res += arabic[8];
-      if (number[i] == '9') res += arabic[9];
-      if (number[i] == '.') res += arabic[10];
-      if (number[i] == ',') res += arabic[11];
-      if (number[i] == ':') res += arabic[12];
-      if (number[i] == '-') res += arabic[13];
-      if (number[i] == '/') res += arabic[14];
-      if (number[i] == ' ') res += arabic[15];
-      if (number[i] == 'AM') res += arabic[16];
-      if (number[i] == 'PM') res += arabic[17];
-    }
-    return res;
-  }
-
   static Widget lineX(double length,
       {double thickness = 1, double left = 0, double top = 0}) {
     return Container(
@@ -357,7 +311,7 @@ class InvoiceTemp1 {
         text = isVisible == 0 ? '' : table.name;
         break;
       case 'customerVatNo':
-        text = isVisible == 0 ? '' : arabicNumber(table.vatNumber);
+        text = isVisible == 0 ? '' : Utils.arabicNumber(table.vatNumber);
         break;
       case 'customerCellphone':
         text = isVisible == 0 ? '' : table.contactNumber;
@@ -495,26 +449,23 @@ class InvoiceTemp1 {
         isVisible = int.parse(line[i][10].toString());
       }
     }
+    strDD = Utils.arabicNumber(table.date.split('-')[0]);
+    strMM = Utils.arabicNumber(table.date.split('-')[1]);
+    strYYYY = Utils.arabicNumber(table.date.split('-')[2]);
     switch (colName) {
       case 'customerAdditionalNo': // Todo: reserved for supply date fld
-        strDD = arabicNumber(Utils.formatDayDate(DateTime.parse(table.date)));
-        strMM = arabicNumber(Utils.formatMonthDate(DateTime.parse(table.date)));
-        strYYYY = arabicNumber(Utils.formatYearDate(DateTime.parse(table.date)));
         text = isVisible == 0 ? '' : '$strYYYY- $strMM- $strDD';
         alignment = Alignment.centerRight;
         break;
       case 'customerZipCode': // Todo: reserved for time fld
-        text = Utils.invoiceTime(printSecond: true);
+        text = Utils.invoiceTime(table.date, printSecond: true);
         alignment = Alignment.centerRight;
         break;
       case 'invoiceNo':
-        text = isVisible == 0 ? '' : arabicNumber(table.invoiceNo);
+        text = isVisible == 0 ? '' : Utils.arabicNumber(table.invoiceNo);
         alignment = Alignment.centerRight;
         break;
       case 'invoiceDate':
-        strDD = arabicNumber(Utils.formatDayDate(DateTime.parse(table.date)));
-        strMM = arabicNumber(Utils.formatMonthDate(DateTime.parse(table.date)));
-        strYYYY = arabicNumber(Utils.formatYearDate(DateTime.parse(table.date)));
         text = isVisible == 0 ? '' : '$strYYYY- $strMM- $strDD';
         alignment = Alignment.centerRight;
         break;

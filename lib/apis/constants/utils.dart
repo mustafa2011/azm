@@ -16,28 +16,16 @@ class Utils {
   static formatPercent(double percent) => '%${percent.toStringAsFixed(0)}';
 
   static formatDate(DateTime date) =>
-      DateFormat('yyyy-MM-dd HH:mm').format(date);
-  static formatAMPMTime(DateTime date) => DateFormat('a').format(date);
-  static formatHrTime(DateTime date) => DateFormat('HH').format(date);
-  static formatMinTime(DateTime date) => DateFormat('mm').format(date);
-  static formatSecTime(DateTime date) => DateFormat('ss').format(date);
-  static formatDayDate(DateTime date) => DateFormat('dd').format(date);
-  static formatMonthDate(DateTime date) => DateFormat('MM').format(date);
-  static formatYearDate(DateTime date) => DateFormat('yyyy').format(date);
+      DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
 
   static formatTime(DateTime date) => DateFormat('HH:mm').format(date);
+  static formatShortDate(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
 
-  static formatShortDateRtl(DateTime date) =>
-      DateFormat('yyyy-MM-dd').format(date);
-
-  static formatShortDate(DateTime date) => DateFormat('dd-MM-yyyy').format(date);
-  static formatShortTime(DateTime date) => DateFormat('HH:mm:ss a').format(date);
   static format(num price) => NumberFormat("#,##0.00 $C").format(price);
   static formatAmount(num price) => NumberFormat("#,##0.00").format(price);
   static formatArabicAmount(num price) => arabicNumber(NumberFormat("##0").format(price).toString());
   static String arabicNumber(String number) {
     String res = '';
-
     final arabic = [
       '٠',
       '١',
@@ -305,19 +293,22 @@ class Utils {
 
   static bool isDefaultProject = false;
 
-  static String invoiceTime({bool printSecond = true}) {
-    DateTime date = DateTime.now();
-    String second = arabicNumber(date.second.toString().padLeft(2, '0'));
-    int hrs = date.hour;
+  static String invoiceTime(String date,{bool printSecond = true}) {
+    String strTime = date.split(' ')[1];
+
+    String hour = arabicNumber(strTime.split(':')[0]);
+    String minute = arabicNumber(strTime.split(':')[1]);
+    String second = arabicNumber(strTime.split(':')[2]);
+    int hrs = int.parse(hour);
     String type = 'AM';
     if(hrs>12){
       hrs = hrs-12;
       type = 'PM';
+    }else if(hrs==12){
+      type='PM';
     }
     String strHrs = Utils.format00(hrs);
-    String minute = arabicNumber(DateFormat('mm').format(date));
-    String hour = arabicNumber(DateFormat(strHrs).format(date));
-    String time = printSecond ? '$second: $minute: $hour $type' : '$minute: $hour $type';
+    String time = printSecond ? '$second: $minute: $strHrs $type' : '$minute: $strHrs $type';
     return time;
   }
 }
