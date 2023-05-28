@@ -71,7 +71,7 @@ class AddEditInvoiceAndroidPage extends StatefulWidget {
 
 class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
   List<String> payMethod = ['شبكة', 'كاش', 'آجل', 'حوالة'];
-  List<String> temp = ['نموذج 1', 'نموذج 2', 'نموذج 3', 'نموذج 4', 'نموذج 5'];
+  List<String> temp = ['نموذج 1', 'نموذج 2']; //, 'نموذج 3', 'نموذج 4', 'نموذج 5'];
   String? selectedPayMethod = Utils.defPayMethod;
   String? selectedTemp;
   int? tempId;
@@ -193,15 +193,15 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
 
       id = widget.isPurchases == true
           ? widget.purchase == null
-              ? purchasesCount == 0
-                  ? 1
-                  : (await db.getNewPurchaseId())! + 1
-              : widget.purchase!.id!
+          ? purchasesCount == 0
+          ? 1
+          : (await db.getNewPurchaseId())! + 1
+          : widget.purchase!.id!
           : widget.invoice != null
-              ? widget.invoice!.id!
-              : invoicesCount == 0
-                  ? 1
-                  : (await db.getNewInvoiceId())! + 1;
+          ? widget.invoice!.id!
+          : invoicesCount == 0
+          ? 1
+          : (await db.getNewInvoiceId())! + 1;
       payer = countCustomers == 0
           ? await FatooraDB.instance.getCustomerById(1)
           : await FatooraDB.instance.getCustomerById(curPayerId);
@@ -299,9 +299,9 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
   }
 
   pw.Text oneLineText(String text,
-          {pw.TextAlign textAlign = pw.TextAlign.center,
-          double fontSize = 10,
-          bool isBold = false}) =>
+      {pw.TextAlign textAlign = pw.TextAlign.center,
+        double fontSize = 10,
+        bool isBold = false}) =>
       pw.Text(
         text,
         textDirection: pw.TextDirection.rtl,
@@ -312,11 +312,11 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
       );
 
   pw.Row twoLineText(
-    String leftText,
-    String rightText, {
-    double fontSize = 10,
-    bool isBold = false,
-  }) =>
+      String leftText,
+      String rightText, {
+        double fontSize = 10,
+        bool isBold = false,
+      }) =>
       pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
         pw.Text(
           leftText,
@@ -364,18 +364,18 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
           .applyMargin(left: 0, top: 0, right: 20, bottom: 0),
       build: (context) => pw.Center(
           child: pw.Column(children: [
-        buildLogo(seller),
-        oneLineText('فاتورة ضريبية مبسطة'),
-        oneLineText('البائع:${seller.seller}'),
-        oneLineText('VAT: ${seller.vatNumber}'),
-        oneLineText('المشتري:${payer.name}'),
-        oneLineText('VAT: ${payer.vatNumber}'),
-        buildInvoice(items),
-        pw.Divider(),
-        buildTotal(invoice, seller),
-        pw.Divider(),
-        buildTerms(invoice, seller),
-      ])),
+            buildLogo(seller),
+            oneLineText('فاتورة ضريبية مبسطة'),
+            oneLineText('البائع:${seller.seller}'),
+            oneLineText('VAT: ${seller.vatNumber}'),
+            oneLineText('المشتري:${payer.name}'),
+            oneLineText('VAT: ${payer.vatNumber}'),
+            buildInvoice(items),
+            pw.Divider(),
+            buildTotal(invoice, seller),
+            pw.Divider(),
+            buildTerms(invoice, seller),
+          ])),
       // pw.SizedBox(height: 10),
     ));
 
@@ -451,19 +451,19 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
         child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
-          pw.Divider(),
-          twoLineText("الإجمالي", "البيان", isBold: true),
-          pw.Divider(),
-          pw.ListView.builder(
-            itemCount: data.length,
-            itemBuilder: (pw.Context context, int index) =>
-                pw.Column(children: [
-              twoLineText("", data[index][2]),
-              twoLineText(data[index][0], data[index][1]),
-              pw.SizedBox(height: 5),
-            ]),
-          ),
-        ]));
+              pw.Divider(),
+              twoLineText("الإجمالي", "البيان", isBold: true),
+              pw.Divider(),
+              pw.ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (pw.Context context, int index) =>
+                    pw.Column(children: [
+                      twoLineText("", data[index][2]),
+                      twoLineText(data[index][0], data[index][1]),
+                      pw.SizedBox(height: 5),
+                    ]),
+              ),
+            ]));
   }
 
   Future<void> printTicket() async {
@@ -474,12 +474,12 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
       newPayerAddress += newPayer.buildingNo;
       newPayerAddress += newPayer.buildingNo.isNotEmpty ? ' ' : '';
       newPayerAddress +=
-          newPayer.streetName.isNotEmpty ? newPayer.streetName : '';
+      newPayer.streetName.isNotEmpty ? newPayer.streetName : '';
       newPayerAddress +=
-          newPayer.district.isNotEmpty ? '-${newPayer.district}' : '';
+      newPayer.district.isNotEmpty ? '-${newPayer.district}' : '';
       newPayerAddress += newPayer.city.isNotEmpty ? '-${newPayer.city}' : '';
       newPayerAddress +=
-          newPayer.country.isNotEmpty ? '-${newPayer.country}' : '';
+      newPayer.country.isNotEmpty ? '-${newPayer.country}' : '';
 
       await SunmiPrinter.initPrinter();
       await SunmiPrinter.startTransactionPrint(true);
@@ -525,7 +525,7 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
         await SunmiPrinter.printRow(cols: [
           ColumnMaker(
               text:
-                  '${Utils.formatPrice((items[i].qty * items[i].price) - items[i].discount)}',
+              '${Utils.formatPrice((items[i].qty * items[i].price) - items[i].discount)}',
               width: 15,
               align: SunmiPrintAlign.LEFT),
           ColumnMaker(
@@ -641,431 +641,449 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Center(
-            child: Text(
-              widget.isCreditNote!
-                  ? language == 'Arabic'
-                      ? 'إشعار دائن'
-                      : 'Credit Note'
-                  : widget.isPurchases!
-                      ? language == 'Arabic'
-                          ? 'فاتورة مشتريات'
-                          : 'Purchases Invoice'
-                      : language == 'Arabic'
-                          ? 'فاتورة'
-                          : 'Invoice',
-              style: const TextStyle(
-                  color: AppColor.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18),
-            ),
-          ),
-          actions: [
-            Platform.isAndroid &&
-                    (device == "Sunmi" ||
-                        device == "Handheld" ||
-                        device == "Portable")
-                ? buildButtonSave()
-                : widget.isPurchases == true
-                    ? buildButtonSave()
-                    : Container(),
-            widget.isPurchases == true ? Container() : buildButtonPreview(),
-            /*widget.isPurchases == true
+    resizeToAvoidBottomInset: false,
+    appBar: AppBar(
+      title: Center(
+        child: Text(
+          widget.isCreditNote!
+              ? language == 'Arabic'
+              ? 'إشعار دائن'
+              : 'Credit Note'
+              : widget.isPurchases!
+              ? language == 'Arabic'
+              ? 'فاتورة مشتريات'
+              : 'Purchases Invoice'
+              : language == 'Arabic'
+              ? 'فاتورة'
+              : 'Invoice',
+          style: const TextStyle(
+              color: AppColor.primary,
+              fontWeight: FontWeight.bold,
+              fontSize: 18),
+        ),
+      ),
+      actions: [
+        Platform.isAndroid &&
+            (device == "Sunmi" ||
+                device == "Handheld" ||
+                device == "Portable")
+            ? buildButtonSave()
+            : widget.isPurchases == true
+            ? buildButtonSave()
+            : Container(),
+        widget.isPurchases == true ? Container() : buildButtonPreview(),
+        /*widget.isPurchases == true
                 ? Container()
                 : activity == "OilServices"
                     ? Container()
                     : buildSwitch(),*/
-          ],
-        ),
-        body: isLoading
-            ? const Center(child: Loading())
-            : widget.isPurchases!
-                ? buildPurchaseInvoiceBody()
-                : buildBody(),
-      );
+      ],
+    ),
+    body: isLoading
+        ? const Center(child: Loading())
+        : widget.isPurchases!
+        ? buildPurchaseInvoiceBody()
+        : buildBody(),
+  );
 
   Widget buildBody() => Stack(
-        children: [
-          /// Product card list
-          Positioned(
-            top: 0,
-            child: isManualInvoice
-                ? SingleChildScrollView(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      child: Form(
-                        key: _key1,
-                        child: Column(
+    children: [
+      /// Product card list
+      Positioned(
+        top: 0,
+        child: isManualInvoice
+            ? SingleChildScrollView(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Form(
+                    key: _key1,
+                    child: Column(
+                      children: [
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                Expanded(child: buildInvoiceDate()),
-                                Utils.space(0, 5),
-                                Expanded(child: buildInvoiceTemp()),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(child: buildInvoiceNo()),
-                                Utils.space(0, 5),
-                                Expanded(child: buildPayMethod()),
-                              ],
-                            ),
-                            buildPayer(),
+                            Expanded(child: buildInvoiceDate()),
+                            Utils.space(0, 5),
+                            Expanded(child: buildInvoiceTemp()),
                           ],
                         ),
-                      ),
-                    ),
-                    Utils.space(2, 0),
-                    NewFrame(
-                        title: 'بيانات سطور الفاتورة',
-                        child: Column(
+                        Row(
                           children: [
-                            buildProductName(),
-                            Row(
-                              children: [
-                                SizedBox(width: 60, child: buildQty()),
-                                Utils.space(0, 2),
-                                activity == "OilServices"
-                                    ? Container()
-                                    : Expanded(
-                                    child: buildPriceWithoutVat()),
-                                activity == "OilServices"
-                                    ? Container()
-                                    : Utils.space(0, 1),
-                                activity == "OilServices"
-                                    ? Container()
-                                    : Expanded(child: buildPrice()),
-                                activity == "OilServices"
-                                    ? Container()
-                                    : Utils.space(0, 2),
-                                activity == "OilServices"
-                                    ? Expanded(child: buildTotalPrice())
-                                    : Container(),
-                                // Expanded(child: buildDiscount()),
-                                Expanded(child: buildDiscount()),
-                                buildInsertButton(),
-                              ],
-                            ),
-                            Utils.space(2, 0),
-                            Container(
-                              height: 40,
-                              color: Colors.grey,
-                              padding: const EdgeInsets.only(
-                                  right: 5, left: 5),
-                              child: Row(
+                            Expanded(child: buildInvoiceNo()),
+                            Utils.space(0, 5),
+                            Expanded(child: buildPayMethod()),
+                          ],
+                        ),
+                        buildPayer(),
+                      ],
+                    ),
+                  ),
+                ),
+                Utils.space(2, 0),
+                NewFrame(
+                    title: 'بيانات سطور الفاتورة',
+                    child: Column(
+                      children: [
+                        buildProductName(),
+                        Row(
+                          children: [
+                            SizedBox(width: 60, child: buildQty()),
+                            Utils.space(0, 2),
+                            activity == "OilServices"
+                                ? Container()
+                                : Expanded(
+                                child: buildPriceWithoutVat()),
+                            activity == "OilServices"
+                                ? Container()
+                                : Utils.space(0, 1),
+                            activity == "OilServices"
+                                ? Container()
+                                : Expanded(child: buildPrice()),
+                            activity == "OilServices"
+                                ? Container()
+                                : Utils.space(0, 2),
+                            activity == "OilServices"
+                                ? Expanded(child: buildTotalPrice())
+                                : Container(),
+                            // Expanded(child: buildDiscount()),
+                            Expanded(child: buildDiscount()),
+                            buildInsertButton(),
+                          ],
+                        ),
+                        Utils.space(2, 0),
+                        Container(
+                          height: 40,
+                          color: Colors.grey,
+                          padding: const EdgeInsets.only(
+                              right: 5, left: 5),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                widget.isCreditNote!
+                                    ? "تفاصيل الإشعار الدائن"
+                                    : language == 'Arabic'
+                                    ? "البيان"
+                                    : "DESC",
+                                style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white),
+                              ),
+                              Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    widget.isCreditNote!
-                                        ? "تفاصيل الإشعار الدائن"
-                                        : language == 'Arabic'
-                                        ? "البيان"
-                                        : "DESC",
+                                    language == 'Arabic'
+                                        ? 'الإجمالي'
+                                        : 'TOTAL',
                                     style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w800,
                                         color: Colors.white),
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        language == 'Arabic'
-                                            ? 'الإجمالي'
-                                            : 'TOTAL',
-                                        style: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w800,
-                                            color: Colors.white),
-                                      ),
-                                      Utils.space(0, 2),
-                                      Text(
-                                        widget.isCreditNote!
-                                            ? "- ${total.toStringAsFixed(2)}"
-                                            : total.toStringAsFixed(2),
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w800,
-                                            color: widget.isCreditNote!
-                                                ? Colors.red
-                                                : Colors.white),
-                                      ),
-                                    ],
+                                  Utils.space(0, 2),
+                                  Text(
+                                    widget.isCreditNote!
+                                        ? "- ${total.toStringAsFixed(2)}"
+                                        : total.toStringAsFixed(2),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w800,
+                                        color: widget.isCreditNote!
+                                            ? Colors.red
+                                            : Colors.white),
                                   ),
                                 ],
                               ),
-                            ),
-                            Container(
-                              height: MediaQuery.of(context).size.height *
-                                  0.3,
-                              padding: const EdgeInsets.only(
-                                  right: 0, left: 0),
-                              child: ListView.builder(
-                                  itemCount: items.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      color: index % 2 == 1
-                                          ? AppColor.background
-                                          : Colors.white,
-                                      child: Column(
-                                        children: [
-                                          Utils.space(0, 1),
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            children: [
-                                              Utils.space(0, 1),
-                                              Expanded(
-                                                child: Align(
-                                                    alignment: Alignment
-                                                        .centerRight,
-                                                    child: Text(
-                                                      items[index]
-                                                          .productName,
-                                                      textDirection:
-                                                      TextDirection
-                                                          .rtl,
-                                                      style:
-                                                      const TextStyle(
-                                                          fontSize:
-                                                          12,
-                                                          color: Colors
-                                                              .black),
-                                                    )),
-                                              ),
-                                              Utils.space(0, 1),
-                                              Expanded(
-                                                child: Row(
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        NewButton(
-                                                          backgroundColor:
-                                                          Colors.grey,
-                                                          icon: Icons.add,
-                                                          padding: 2,
-                                                          iconSize: 25,
-                                                          onTap: () =>
-                                                              _addQuantity(
-                                                                  index),
-                                                        ),
-                                                        SizedBox(
-                                                            width: 40,
-                                                            child: Text(
-                                                              items[index]
-                                                                  .qty
-                                                                  .toStringAsFixed(
-                                                                  2),
-                                                              textAlign:
-                                                              TextAlign
-                                                                  .center,
-                                                              style: const TextStyle(
-                                                                  fontSize: 12,
-                                                                  // fontWeight: FontWeight.w900,
-                                                                  color: Colors.black),
-                                                            )),
-                                                        NewButton(
-                                                          backgroundColor:
-                                                          Colors.grey,
-                                                          icon: Icons
-                                                              .remove,
-                                                          padding: 2,
-                                                          iconSize: 25,
-                                                          onTap: () =>
-                                                              _removeQuantity(
-                                                                  index),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Utils.space(0, 1),
-                                                    Expanded(
-                                                        child: Text(
-                                                          items[index]
-                                                              .price
-                                                              .toStringAsFixed(
-                                                              2),
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: widget
-                                                                  .isCreditNote!
-                                                                  ? Colors.red
-                                                                  : Colors
-                                                                  .black),
-                                                        )),
-                                                    Utils.space(0, 1),
-                                                    Expanded(
-                                                        child: Text(
-                                                          (items[index].qty *
-                                                              (items[index]
-                                                                  .price))
-                                                              .toStringAsFixed(
-                                                              2),
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: widget
-                                                                  .isCreditNote!
-                                                                  ? Colors.red
-                                                                  : Colors
-                                                                  .black),
-                                                        )),
-                                                  ],
-                                                ),
-                                              ),
-
-                                              ///Remove item from list
-                                              NewButton(
-                                                backgroundColor:
-                                                Colors.grey,
-                                                padding: 2,
-                                                icon: Icons.clear,
-                                                iconSize: 25,
-                                                onTap: () async {
-                                                  setState(() {
-                                                    num lineTotal =
-                                                        items[index].qty *
-                                                            items[index]
-                                                                .price;
-                                                    total =
-                                                        total - lineTotal;
-                                                    items.removeAt(index);
-                                                  });
-                                                },
-                                              ),
-                                              Utils.space(0, 1),
-                                            ],
-                                          ),
-                                          Utils.space(0, 1),
-                                          const Divider(
-                                            thickness: 1,
-                                            height: 0,
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }),
-                            ),
-                          ],
-                        )),
-                  ],
-                ),
-              ),
-            )
-                : Column(
-              children: [
-                SingleChildScrollView(
-                  child: SizedBox(
-                    // height: MediaQuery.of(context).size.height * 0.50,
-                    width: MediaQuery.of(context).size.width,
-                    child: noProductFound
-                        ? Center(
-                      child: Text(
-                        language == 'Arabic'
-                            ? 'لا يوجد لديك منتجات مسجلة'
-                            : 'No products recorded',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontSize: 16,
-                            color: AppColor.background),
-                      ),
-                    )
-                        : Column(
-                      children: [
-                        Container(
-                          color: AppColor.primary,
-                          height:
-                          MediaQuery.of(context).size.height *
-                              0.40,
-                          child: StaggeredGridView.countBuilder(
-                            padding: const EdgeInsets.all(2),
-                            itemCount: products.length,
-                            staggeredTileBuilder: (index) =>
-                            const StaggeredTile.fit(1),
-                            crossAxisCount: 4,
-                            mainAxisSpacing: 0,
-                            crossAxisSpacing: 2,
-                            itemBuilder: (context, index) {
-                              final product = products[index];
-
-                              return InkWell(
-                                onTap: () async {
-                                  bool found = false;
-                                  for (int i = 0;
-                                  i < items.length;
-                                  i++) {
-                                    if (items[i].productName ==
-                                        (product.productName
-                                            .toString())) {
-                                      found = true;
-                                      break;
-                                    }
-                                  }
-                                  setState(() {
-                                    if (!found) {
-                                      items.add(InvoiceLines(
-                                        productName: product
-                                            .productName
-                                            .toString(),
-                                        qty: 1,
-                                        price: product.price!,
-                                        recId: recId,
-                                      ));
-                                    }
-                                    total = 0;
-                                    for (int i = 0;
-                                    i < items.length;
-                                    i++) {
-                                      total = total +
-                                          ((items[i].qty) *
-                                              items[i].price);
-                                    }
-                                  });
-                                },
-                                child:
-                                ProductCardWidgetToBeInvoiced(
-                                    product: product,
-                                    index: index),
-                              );
-                            },
+                            ],
                           ),
                         ),
                         Container(
-                          color: AppColor.background,
-                          child: Column(
-                            children: [
-                              Utils.space(2, 0),
-                              NewFrame(
-                                  title: 'بيانات سطور الفاتورة',
+                          height: MediaQuery.of(context).size.height *
+                              0.3,
+                          padding: const EdgeInsets.only(
+                              right: 0, left: 0),
+                          child: ListView.builder(
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  color: index % 2 == 1
+                                      ? AppColor.background
+                                      : Colors.white,
                                   child: Column(
                                     children: [
-                                      Container(
-                                        height: 40,
-                                        color: Colors.grey,
-                                        padding:
-                                        const EdgeInsets.only(
-                                            right: 5, left: 5),
-                                        child: Row(
+                                      Utils.space(0, 1),
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.start,
+                                        children: [
+                                          Utils.space(0, 1),
+                                          Expanded(
+                                            child: Align(
+                                                alignment: Alignment
+                                                    .centerRight,
+                                                child: Text(
+                                                  items[index]
+                                                      .productName,
+                                                  textDirection:
+                                                  TextDirection
+                                                      .rtl,
+                                                  style:
+                                                  const TextStyle(
+                                                      fontSize:
+                                                      12,
+                                                      color: Colors
+                                                          .black),
+                                                )),
+                                          ),
+                                          Utils.space(0, 1),
+                                          Expanded(
+                                            child: Row(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    NewButton(
+                                                      backgroundColor:
+                                                      Colors.grey,
+                                                      icon: Icons.add,
+                                                      padding: 2,
+                                                      iconSize: 25,
+                                                      onTap: () =>
+                                                          _addQuantity(
+                                                              index),
+                                                    ),
+                                                    SizedBox(
+                                                        width: 40,
+                                                        child: Text(
+                                                          items[index]
+                                                              .qty
+                                                              .toStringAsFixed(
+                                                              2),
+                                                          textAlign:
+                                                          TextAlign
+                                                              .center,
+                                                          style: const TextStyle(
+                                                              fontSize: 12,
+                                                              // fontWeight: FontWeight.w900,
+                                                              color: Colors.black),
+                                                        )),
+                                                    NewButton(
+                                                      backgroundColor:
+                                                      Colors.grey,
+                                                      icon: Icons
+                                                          .remove,
+                                                      padding: 2,
+                                                      iconSize: 25,
+                                                      onTap: () =>
+                                                          _removeQuantity(
+                                                              index),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Utils.space(0, 1),
+                                                Expanded(
+                                                    child: Text(
+                                                      items[index]
+                                                          .price
+                                                          .toStringAsFixed(
+                                                          2),
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: widget
+                                                              .isCreditNote!
+                                                              ? Colors.red
+                                                              : Colors
+                                                              .black),
+                                                    )),
+                                                Utils.space(0, 1),
+                                                Expanded(
+                                                    child: Text(
+                                                      (items[index].qty *
+                                                          (items[index]
+                                                              .price))
+                                                          .toStringAsFixed(
+                                                          2),
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: widget
+                                                              .isCreditNote!
+                                                              ? Colors.red
+                                                              : Colors
+                                                              .black),
+                                                    )),
+                                              ],
+                                            ),
+                                          ),
+
+                                          ///Remove item from list
+                                          NewButton(
+                                            backgroundColor:
+                                            Colors.grey,
+                                            padding: 2,
+                                            icon: Icons.clear,
+                                            iconSize: 25,
+                                            onTap: () async {
+                                              setState(() {
+                                                num lineTotal =
+                                                    items[index].qty *
+                                                        items[index]
+                                                            .price;
+                                                total =
+                                                    total - lineTotal;
+                                                items.removeAt(index);
+                                              });
+                                            },
+                                          ),
+                                          Utils.space(0, 1),
+                                        ],
+                                      ),
+                                      Utils.space(0, 1),
+                                      const Divider(
+                                        thickness: 1,
+                                        height: 0,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
+                        ),
+                      ],
+                    )),
+              ],
+            ),
+          ),
+        )
+            : Column(
+          children: [
+            SingleChildScrollView(
+              child: SizedBox(
+                // height: MediaQuery.of(context).size.height * 0.50,
+                width: MediaQuery.of(context).size.width,
+                child: noProductFound
+                    ? Center(
+                  child: Text(
+                    language == 'Arabic'
+                        ? 'لا يوجد لديك منتجات مسجلة'
+                        : 'No products recorded',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        color: AppColor.background),
+                  ),
+                )
+                    : Column(
+                  children: [
+                    Container(
+                      color: AppColor.primary,
+                      height:
+                      MediaQuery.of(context).size.height *
+                          0.40,
+                      child: StaggeredGridView.countBuilder(
+                        padding: const EdgeInsets.all(2),
+                        itemCount: products.length,
+                        staggeredTileBuilder: (index) =>
+                        const StaggeredTile.fit(1),
+                        crossAxisCount: 4,
+                        mainAxisSpacing: 0,
+                        crossAxisSpacing: 2,
+                        itemBuilder: (context, index) {
+                          final product = products[index];
+
+                          return InkWell(
+                            onTap: () async {
+                              bool found = false;
+                              for (int i = 0;
+                              i < items.length;
+                              i++) {
+                                if (items[i].productName ==
+                                    (product.productName
+                                        .toString())) {
+                                  found = true;
+                                  break;
+                                }
+                              }
+                              setState(() {
+                                if (!found) {
+                                  items.add(InvoiceLines(
+                                    productName: product
+                                        .productName
+                                        .toString(),
+                                    qty: 1,
+                                    price: product.price!,
+                                    recId: recId,
+                                  ));
+                                }
+                                total = 0;
+                                for (int i = 0;
+                                i < items.length;
+                                i++) {
+                                  total = total +
+                                      ((items[i].qty) *
+                                          items[i].price);
+                                }
+                              });
+                            },
+                            child:
+                            ProductCardWidgetToBeInvoiced(
+                                product: product,
+                                index: index),
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      color: AppColor.background,
+                      child: Column(
+                        children: [
+                          Utils.space(2, 0),
+                          NewFrame(
+                              title: 'بيانات سطور الفاتورة',
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    color: Colors.grey,
+                                    padding:
+                                    const EdgeInsets.only(
+                                        right: 5, left: 5),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment
+                                          .spaceBetween,
+                                      children: [
+                                        Text(
+                                          widget.isCreditNote!
+                                              ? "تفاصيل الإشعار الدائن"
+                                              : language ==
+                                              'Arabic'
+                                              ? "البيان"
+                                              : "DESC",
+                                          style:
+                                          const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight:
+                                              FontWeight
+                                                  .w800,
+                                              color: Colors
+                                                  .white),
+                                        ),
+                                        Row(
                                           mainAxisAlignment:
                                           MainAxisAlignment
-                                              .spaceBetween,
+                                              .center,
                                           children: [
                                             Text(
-                                              widget.isCreditNote!
-                                                  ? "تفاصيل الإشعار الدائن"
-                                                  : language ==
+                                              language ==
                                                   'Arabic'
-                                                  ? "البيان"
-                                                  : "DESC",
-                                              style:
-                                              const TextStyle(
+                                                  ? 'الإجمالي'
+                                                  : 'TOTAL',
+                                              style: const TextStyle(
                                                   fontSize: 12,
                                                   fontWeight:
                                                   FontWeight
@@ -1073,199 +1091,181 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
                                                   color: Colors
                                                       .white),
                                             ),
-                                            Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .center,
-                                              children: [
-                                                Text(
-                                                  language ==
-                                                      'Arabic'
-                                                      ? 'الإجمالي'
-                                                      : 'TOTAL',
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                      FontWeight
-                                                          .w800,
-                                                      color: Colors
-                                                          .white),
-                                                ),
-                                                Utils.space(0, 2),
-                                                Text(
-                                                  widget.isCreditNote!
-                                                      ? "- ${total.toStringAsFixed(2)}"
-                                                      : total
-                                                      .toStringAsFixed(
-                                                      2),
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                      FontWeight
-                                                          .w800,
-                                                      color: widget
-                                                          .isCreditNote!
-                                                          ? Colors
-                                                          .red
-                                                          : Colors
-                                                          .white),
-                                                ),
-                                              ],
+                                            Utils.space(0, 2),
+                                            Text(
+                                              widget.isCreditNote!
+                                                  ? "- ${total.toStringAsFixed(2)}"
+                                                  : total
+                                                  .toStringAsFixed(
+                                                  2),
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight:
+                                                  FontWeight
+                                                      .w800,
+                                                  color: widget
+                                                      .isCreditNote!
+                                                      ? Colors
+                                                      .red
+                                                      : Colors
+                                                      .white),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                      Container(
-                                        height:
-                                        MediaQuery.of(context)
-                                            .size
-                                            .height *
-                                            0.3,
-                                        padding:
-                                        const EdgeInsets.only(
-                                            right: 0, left: 0),
-                                        child: ListView.builder(
-                                            itemCount: items.length,
-                                            itemBuilder:
-                                                (context, index) {
-                                              return Container(
-                                                color: index % 2 ==
-                                                    1
-                                                    ? AppColor
-                                                    .background
-                                                    : Colors.white,
-                                                child: Column(
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    height:
+                                    MediaQuery.of(context)
+                                        .size
+                                        .height *
+                                        0.3,
+                                    padding:
+                                    const EdgeInsets.only(
+                                        right: 0, left: 0),
+                                    child: ListView.builder(
+                                        itemCount: items.length,
+                                        itemBuilder:
+                                            (context, index) {
+                                          return Container(
+                                            color: index % 2 ==
+                                                1
+                                                ? AppColor
+                                                .background
+                                                : Colors.white,
+                                            child: Column(
+                                              children: [
+                                                Utils.space(
+                                                    0, 1),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .start,
                                                   children: [
                                                     Utils.space(
                                                         0, 1),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .start,
-                                                      children: [
-                                                        Utils.space(
-                                                            0, 1),
-                                                        Expanded(
-                                                          child: Align(
-                                                              alignment: Alignment.centerRight,
-                                                              child: Text(
-                                                                items[index].productName,
-                                                                textDirection:
-                                                                TextDirection.rtl,
-                                                                style:
-                                                                const TextStyle(fontSize: 12, color: Colors.black),
-                                                              )),
-                                                        ),
-                                                        Utils.space(
-                                                            0, 1),
-                                                        Expanded(
-                                                          child:
-                                                          Row(
-                                                            children: [
-                                                              Row(
-                                                                children: [
-                                                                  NewButton(
-                                                                    backgroundColor: Colors.grey,
-                                                                    icon: Icons.add,
-                                                                    padding: 2,
-                                                                    iconSize: 25,
-                                                                    onTap: () => _addQuantity(index),
-                                                                  ),
-                                                                  SizedBox(
-                                                                      width: 40,
-                                                                      child: Text(
-                                                                        items[index].qty.toStringAsFixed(2),
-                                                                        textAlign: TextAlign.center,
-                                                                        style: const TextStyle(
-                                                                            fontSize: 12,
-                                                                            // fontWeight: FontWeight.w900,
-                                                                            color: Colors.black),
-                                                                      )),
-                                                                  NewButton(
-                                                                    backgroundColor: Colors.grey,
-                                                                    icon: Icons.remove,
-                                                                    padding: 2,
-                                                                    iconSize: 25,
-                                                                    onTap: () => _removeQuantity(index),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              Utils.space(
-                                                                  0,
-                                                                  1),
-                                                              Expanded(
-                                                                  child: Text(
-                                                                    items[index].price.toStringAsFixed(2),
-                                                                    style:
-                                                                    TextStyle(fontSize: 12, color: widget.isCreditNote! ? Colors.red : Colors.black),
-                                                                  )),
-                                                              Utils.space(
-                                                                  0,
-                                                                  1),
-                                                              Expanded(
-                                                                  child: Text(
-                                                                    (items[index].qty * (items[index].price)).toStringAsFixed(2),
-                                                                    style:
-                                                                    TextStyle(fontSize: 12, color: widget.isCreditNote! ? Colors.red : Colors.black),
-                                                                  )),
-                                                            ],
-                                                          ),
-                                                        ),
-
-                                                        ///Remove item from list
-                                                        NewButton(
-                                                          backgroundColor:
-                                                          Colors
-                                                              .grey,
-                                                          padding:
-                                                          2,
-                                                          icon: Icons
-                                                              .clear,
-                                                          iconSize:
-                                                          25,
-                                                          onTap:
-                                                              () async {
-                                                            setState(
-                                                                    () {
-                                                                  num lineTotal =
-                                                                      items[index].qty * items[index].price;
-                                                                  total =
-                                                                      total - lineTotal;
-                                                                  items.removeAt(
-                                                                      index);
-                                                                });
-                                                          },
-                                                        ),
-                                                        Utils.space(
-                                                            0, 1),
-                                                      ],
+                                                    Expanded(
+                                                      child: Align(
+                                                          alignment: Alignment.centerRight,
+                                                          child: Text(
+                                                            items[index].productName,
+                                                            textDirection:
+                                                            TextDirection.rtl,
+                                                            style:
+                                                            const TextStyle(fontSize: 12, color: Colors.black),
+                                                          )),
                                                     ),
                                                     Utils.space(
                                                         0, 1),
-                                                    const Divider(
-                                                      thickness: 1,
-                                                      height: 0,
+                                                    Expanded(
+                                                      child:
+                                                      Row(
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              NewButton(
+                                                                backgroundColor: Colors.grey,
+                                                                icon: Icons.add,
+                                                                padding: 2,
+                                                                iconSize: 25,
+                                                                onTap: () => _addQuantity(index),
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 40,
+                                                                  child: Text(
+                                                                    items[index].qty.toStringAsFixed(2),
+                                                                    textAlign: TextAlign.center,
+                                                                    style: const TextStyle(
+                                                                        fontSize: 12,
+                                                                        // fontWeight: FontWeight.w900,
+                                                                        color: Colors.black),
+                                                                  )),
+                                                              NewButton(
+                                                                backgroundColor: Colors.grey,
+                                                                icon: Icons.remove,
+                                                                padding: 2,
+                                                                iconSize: 25,
+                                                                onTap: () => _removeQuantity(index),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Utils.space(
+                                                              0,
+                                                              1),
+                                                          Expanded(
+                                                              child: Text(
+                                                                items[index].price.toStringAsFixed(2),
+                                                                style:
+                                                                TextStyle(fontSize: 12, color: widget.isCreditNote! ? Colors.red : Colors.black),
+                                                              )),
+                                                          Utils.space(
+                                                              0,
+                                                              1),
+                                                          Expanded(
+                                                              child: Text(
+                                                                (items[index].qty * (items[index].price)).toStringAsFixed(2),
+                                                                style:
+                                                                TextStyle(fontSize: 12, color: widget.isCreditNote! ? Colors.red : Colors.black),
+                                                              )),
+                                                        ],
+                                                      ),
                                                     ),
+
+                                                    ///Remove item from list
+                                                    NewButton(
+                                                      backgroundColor:
+                                                      Colors
+                                                          .grey,
+                                                      padding:
+                                                      2,
+                                                      icon: Icons
+                                                          .clear,
+                                                      iconSize:
+                                                      25,
+                                                      onTap:
+                                                          () async {
+                                                        setState(
+                                                                () {
+                                                              num lineTotal =
+                                                                  items[index].qty * items[index].price;
+                                                              total =
+                                                                  total - lineTotal;
+                                                              items.removeAt(
+                                                                  index);
+                                                            });
+                                                      },
+                                                    ),
+                                                    Utils.space(
+                                                        0, 1),
                                                   ],
                                                 ),
-                                              );
-                                            }),
-                                      ),
-                                    ],
-                                  )),
-                            ],
-                          ),
-                        ),
-                      ],
+                                                Utils.space(
+                                                    0, 1),
+                                                const Divider(
+                                                  thickness: 1,
+                                                  height: 0,
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                                ],
+                              )),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
+        ),
+      ),
 
-        ],
-      );
+    ],
+  );
 
   Widget buildButtonSave() {
     return Padding(
@@ -1273,9 +1273,9 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           foregroundColor:
-              isManualInvoice ? AppColor.primary : AppColor.background,
+          isManualInvoice ? AppColor.primary : AppColor.background,
           backgroundColor:
-              isManualInvoice ? AppColor.background : AppColor.primary,
+          isManualInvoice ? AppColor.background : AppColor.primary,
         ),
         onPressed: saveAndPrint,
         child: widget.isPurchases == true
@@ -1291,9 +1291,9 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           foregroundColor:
-              isManualInvoice ? AppColor.primary : AppColor.background,
+          isManualInvoice ? AppColor.primary : AppColor.background,
           backgroundColor:
-              isManualInvoice ? AppColor.background : AppColor.primary,
+          isManualInvoice ? AppColor.background : AppColor.primary,
         ),
         onPressed: printPreview,
         child: Text(language == 'Arabic' ? 'عرض' : 'View'),
@@ -1307,9 +1307,9 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           foregroundColor:
-              isManualInvoice ? AppColor.primary : AppColor.background,
+          isManualInvoice ? AppColor.primary : AppColor.background,
           backgroundColor:
-              isManualInvoice ? AppColor.background : AppColor.primary,
+          isManualInvoice ? AppColor.background : AppColor.primary,
         ),
         onPressed: printEstimate,
         child: Text(language == 'Arabic' ? 'عرض سعر' : 'Estimate'),
@@ -1323,9 +1323,9 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           foregroundColor:
-              isManualInvoice ? AppColor.primary : AppColor.background,
+          isManualInvoice ? AppColor.primary : AppColor.background,
           backgroundColor:
-              isManualInvoice ? AppColor.background : AppColor.primary,
+          isManualInvoice ? AppColor.background : AppColor.primary,
         ),
         onPressed: () async {
           String message =
@@ -1390,273 +1390,273 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
       onChanged: (value) => setState(() => isManualInvoice = value));
 
   Widget buildProductName() => DropdownSearch<String>(
-        popupProps: const PopupProps.menu(
-          showSearchBox: true,
-          showSelectedItems: true,
-          searchFieldProps: TextFieldProps(),
-        ),
-        dropdownDecoratorProps: DropDownDecoratorProps(
-          baseStyle: fontStyle,
-          dropdownSearchDecoration: InputDecoration(
-            labelText: language == 'Arabic' ? 'المنتج' : 'Product',
-          ),
-        ),
-        items: productsList,
-        onChanged: (val) async {
-          int productId = int.parse(val!.split('-')[0]);
-          Product prod = await FatooraDB.instance.getProductById(productId);
-          num? productPrice = prod.price;
-          setState(() {
-            _productName.text = val;
-            // _price.text = Utils.formatNoCurrency(productPrice!);
-            _price.text = (productPrice!.toString());
-            _priceWithoutVat.text = Utils.formatNoCurrency(productPrice / 1.15);
-          });
-        },
-        selectedItem: _productName.text,
-      );
+    popupProps: const PopupProps.menu(
+      showSearchBox: true,
+      showSelectedItems: true,
+      searchFieldProps: TextFieldProps(),
+    ),
+    dropdownDecoratorProps: DropDownDecoratorProps(
+      baseStyle: fontStyle,
+      dropdownSearchDecoration: InputDecoration(
+        labelText: language == 'Arabic' ? 'المنتج' : 'Product',
+      ),
+    ),
+    items: productsList,
+    onChanged: (val) async {
+      int productId = int.parse(val!.split('-')[0]);
+      Product prod = await FatooraDB.instance.getProductById(productId);
+      num? productPrice = prod.price;
+      setState(() {
+        _productName.text = val;
+        // _price.text = Utils.formatNoCurrency(productPrice!);
+        _price.text = (productPrice!.toString());
+        _priceWithoutVat.text = Utils.formatNoCurrency(productPrice / 1.15);
+      });
+    },
+    selectedItem: _productName.text,
+  );
 
   Widget buildInvoiceDate() => TextFormField(
-        controller: _date,
-        readOnly: true,
-        onTap: _selectDate,
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText: language == 'Arabic' ? 'التاريخ' : 'Date',
-        ),
-        validator: (invoiceNo) =>
-            invoiceNo == null || invoiceNo == '' ? 'يجب إدخال التاريخ' : null,
-      );
+    controller: _date,
+    readOnly: true,
+    onTap: _selectDate,
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText: language == 'Arabic' ? 'التاريخ' : 'Date',
+    ),
+    validator: (invoiceNo) =>
+    invoiceNo == null || invoiceNo == '' ? 'يجب إدخال التاريخ' : null,
+  );
 
   Widget buildInvoiceNo() => TextFormField(
-        controller: _invoiceNo,
-        autofocus: true,
-        onTap: () {
-          var textValue = _invoiceNo.text;
-          _invoiceNo.selection = TextSelection(
-            baseOffset: 0,
-            extentOffset: textValue.length,
-          );
-        },
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText: language == 'Arabic' ? 'رقم الفاتورة' : 'Invoice No',
-        ),
-        validator: (invoiceNo) => invoiceNo == null || invoiceNo == ''
-            ? 'يجب إدخال رقم الفاتورة'
-            : null,
+    controller: _invoiceNo,
+    autofocus: true,
+    onTap: () {
+      var textValue = _invoiceNo.text;
+      _invoiceNo.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: textValue.length,
       );
+    },
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText: language == 'Arabic' ? 'رقم الفاتورة' : 'Invoice No',
+    ),
+    validator: (invoiceNo) => invoiceNo == null || invoiceNo == ''
+        ? 'يجب إدخال رقم الفاتورة'
+        : null,
+  );
 
   Widget buildQty() => TextFormField(
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        controller: _qty,
-        onTap: () {
-          var textValue = _qty.text;
-          _qty.selection = TextSelection(
-            baseOffset: 0,
-            extentOffset: textValue.length,
-          );
-        },
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText: activity == "OilServices"
-              ? language == 'Arabic'
-                  ? 'الكمية/اللترات'
-                  : 'Qty/Litre'
-              : language == 'Arabic'
-                  ? 'الكمية'
-                  : 'Qty',
-        ),
-        validator: (qty) =>
-            qty == null || qty == '' ? 'يجب إدخال الكمية' : null,
-        onChanged: (value) => _totalPrice.text =
-            "${Utils.formatNoCurrency(num.parse(value) * num.parse(_price.text))}",
+    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+    controller: _qty,
+    onTap: () {
+      var textValue = _qty.text;
+      _qty.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: textValue.length,
       );
+    },
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText: activity == "OilServices"
+          ? language == 'Arabic'
+          ? 'الكمية/اللترات'
+          : 'Qty/Litre'
+          : language == 'Arabic'
+          ? 'الكمية'
+          : 'Qty',
+    ),
+    validator: (qty) =>
+    qty == null || qty == '' ? 'يجب إدخال الكمية' : null,
+    onChanged: (value) => _totalPrice.text =
+    "${Utils.formatNoCurrency(num.parse(value) * num.parse(_price.text))}",
+  );
 
   Widget buildPrice() => TextFormField(
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        controller: _price,
-        onTap: () {
-          var textValue = _price.text;
-          _price.selection = TextSelection(
-            baseOffset: 0,
-            extentOffset: textValue.length,
-          );
-        },
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText:
-              language == 'Arabic' ? 'السعر مع الضريبة' : 'Price VAT Included',
-        ),
-        validator: (price) =>
-            price == null || price == '' ? 'يجب إدخال سعر المنتج' : null,
-        onChanged: (value) => _priceWithoutVat.text =
-            "${Utils.formatNoCurrency(num.parse(value) / 1.15)}",
+    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+    controller: _price,
+    onTap: () {
+      var textValue = _price.text;
+      _price.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: textValue.length,
       );
+    },
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText:
+      language == 'Arabic' ? 'السعر مع الضريبة' : 'Price VAT Included',
+    ),
+    validator: (price) =>
+    price == null || price == '' ? 'يجب إدخال سعر المنتج' : null,
+    onChanged: (value) => _priceWithoutVat.text =
+    "${Utils.formatNoCurrency(num.parse(value) / 1.15)}",
+  );
 
   Widget buildDiscount() => TextFormField(
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        controller: _discount,
-        onTap: () {
-          var textValue = _discount.text;
-          _discount.selection = TextSelection(
-            baseOffset: 0,
-            extentOffset: textValue.length,
-          );
-        },
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText: language == 'Arabic' ? 'الخصم' : 'Discount',
-        ),
+    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+    controller: _discount,
+    onTap: () {
+      var textValue = _discount.text;
+      _discount.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: textValue.length,
       );
+    },
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText: language == 'Arabic' ? 'الخصم' : 'Discount',
+    ),
+  );
 
   Widget buildTotalPrice() => TextFormField(
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        controller: _totalPrice,
-        onTap: () {
-          var textValue = _totalPrice.text;
-          _totalPrice.selection = TextSelection(
-            baseOffset: 0,
-            extentOffset: textValue.length,
-          );
-        },
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText: language == 'Arabic' ? 'المبلغ' : 'Paid Amount',
-        ),
-        validator: (price) =>
-            price == null || price == '' ? 'يجب ادخال المبلغ' : null,
-        onChanged: (value) => _qty.text =
-            "${Utils.formatNoCurrency(num.parse(value) / num.parse(_price.text))}",
+    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+    controller: _totalPrice,
+    onTap: () {
+      var textValue = _totalPrice.text;
+      _totalPrice.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: textValue.length,
       );
+    },
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText: language == 'Arabic' ? 'المبلغ' : 'Paid Amount',
+    ),
+    validator: (price) =>
+    price == null || price == '' ? 'يجب ادخال المبلغ' : null,
+    onChanged: (value) => _qty.text =
+    "${Utils.formatNoCurrency(num.parse(value) / num.parse(_price.text))}",
+  );
 
   Widget buildPriceWithoutVat() => TextFormField(
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        controller: _priceWithoutVat,
-        onTap: () {
-          var textValue = _priceWithoutVat.text;
-          _priceWithoutVat.selection = TextSelection(
-            baseOffset: 0,
-            extentOffset: textValue.length,
-          );
-        },
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText:
-              language == 'Arabic' ? 'السعر بدون ضريبة' : 'Price VAT Excluded',
-        ),
-        validator: (price) =>
-            price == null || price == '' ? 'يجب إدخال سعر المنتج' : null,
-        onChanged: (value) =>
-            _price.text = "${Utils.formatNoCurrency(num.parse(value) * 1.15)}",
+    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+    controller: _priceWithoutVat,
+    onTap: () {
+      var textValue = _priceWithoutVat.text;
+      _priceWithoutVat.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: textValue.length,
       );
+    },
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText:
+      language == 'Arabic' ? 'السعر بدون ضريبة' : 'Price VAT Excluded',
+    ),
+    validator: (price) =>
+    price == null || price == '' ? 'يجب إدخال سعر المنتج' : null,
+    onChanged: (value) =>
+    _price.text = "${Utils.formatNoCurrency(num.parse(value) * 1.15)}",
+  );
 
   Widget buildInsertButton() => Padding(
-        padding: const EdgeInsets.only(top: 20),
-        child: InkWell(
-          onTap: () async {
-            String price = _price.text.replaceAll(',', '');
-            int productId = int.parse(_productName.text.split('-')[0]);
-            String barcode =
-                await FatooraDB.instance.getProductBarcode(productId);
-            String unit = await FatooraDB.instance.getProductUnit(productId);
-            if (_productName.text != '' &&
-                num.parse(_qty.text) > 0 &&
-                num.parse(price) >= 0) {
-              setState(() {
-                items.add(InvoiceLines(
-                  productName: num.parse(price) == 0
-                      ? '${_productName.text.split('-')[1]}- مجاناً'
-                      : _productName.text.split('-')[1],
-                  barcode: barcode,
-                  unit: unit,
-                  qty: num.parse(_qty.text.toString()),
-                  price: num.parse(price),
-                  discount: num.parse(_discount.text),
-                  recId: recId,
-                ));
-                num lineTotal = (num.parse(_qty.text) * num.parse(price)) -
-                    num.parse(_discount.text);
-                num lineDiscount = num.parse(_discount.text);
-                total = total + lineTotal;
-                totalDiscount = totalDiscount + lineDiscount;
-                _productName.clear();
-                _qty.text = activity == "OilServices" ? '0.00' : '1';
-                _price.text = '0.00';
-                _discount.text = '0.00';
-                _totalPrice.text = '0.00';
-                _priceWithoutVat.text = '0.00';
-                focusNode.requestFocus();
-              });
-            }
-          },
-          child: const Icon(
-            Icons.add_shopping_cart_sharp,
-            size: 40,
-            color: AppColor.primary,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.only(top: 20),
+    child: InkWell(
+      onTap: () async {
+        String price = _price.text.replaceAll(',', '');
+        int productId = int.parse(_productName.text.split('-')[0]);
+        String barcode =
+        await FatooraDB.instance.getProductBarcode(productId);
+        String unit = await FatooraDB.instance.getProductUnit(productId);
+        if (_productName.text != '' &&
+            num.parse(_qty.text) > 0 &&
+            num.parse(price) >= 0) {
+          setState(() {
+            items.add(InvoiceLines(
+              productName: num.parse(price) == 0
+                  ? '${_productName.text.split('-')[1]}- مجاناً'
+                  : _productName.text.split('-')[1],
+              barcode: barcode,
+              unit: unit,
+              qty: num.parse(_qty.text.toString()),
+              price: num.parse(price),
+              discount: num.parse(_discount.text),
+              recId: recId,
+            ));
+            num lineTotal = (num.parse(_qty.text) * num.parse(price)) -
+                num.parse(_discount.text);
+            num lineDiscount = num.parse(_discount.text);
+            total = total + lineTotal;
+            totalDiscount = totalDiscount + lineDiscount;
+            _productName.clear();
+            _qty.text = activity == "OilServices" ? '0.00' : '1';
+            _price.text = '0.00';
+            _discount.text = '0.00';
+            _totalPrice.text = '0.00';
+            _priceWithoutVat.text = '0.00';
+            focusNode.requestFocus();
+          });
+        }
+      },
+      child: const Icon(
+        Icons.add_shopping_cart_sharp,
+        size: 40,
+        color: AppColor.primary,
+      ),
+    ),
+  );
 
   Widget buildPurchaseInvoiceBody() => Container(
-        height: MediaQuery.of(context).size.height * 0.90,
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _key2,
-          child: Column(
+    height: MediaQuery.of(context).size.height * 0.90,
+    width: MediaQuery.of(context).size.width,
+    padding: const EdgeInsets.all(20),
+    child: Form(
+      key: _key2,
+      child: Column(
+        children: [
+          buildVendor(),
+          Row(
             children: [
-              buildVendor(),
-              Row(
-                children: [
-                  Expanded(child: buildVendorVatNumber()),
-                  Utils.space(0, 4),
-                  Expanded(child: buildDate()),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(child: buildTotalPurchases()),
-                  Utils.space(0, 4),
-                  Expanded(child: buildVatPurchases()),
-                ],
-              ),
-              buildDetails(),
-              Center(
-                child: Utils.isHandScanner
-                    ? Container()
-                    : Platform.isWindows
-                        ? Container()
-                        : ElevatedButton(
-                            onPressed: () {
-                              controller!.resumeCamera();
-                            },
-                            child: Text(language == 'Arabic'
-                                ? 'اعادة تشغيل القارئ'
-                                : 'Restart Scanner'),
-                          ),
-              ),
-              Expanded(
-                  child: Utils.isHandScanner
-                      ? _buildQRText()
-                      : _buildQrView(context)),
+              Expanded(child: buildVendorVatNumber()),
+              Utils.space(0, 4),
+              Expanded(child: buildDate()),
             ],
           ),
-        ),
-      );
+          Row(
+            children: [
+              Expanded(child: buildTotalPurchases()),
+              Utils.space(0, 4),
+              Expanded(child: buildVatPurchases()),
+            ],
+          ),
+          buildDetails(),
+          Center(
+            child: Utils.isHandScanner
+                ? Container()
+                : Platform.isWindows
+                ? Container()
+                : ElevatedButton(
+              onPressed: () {
+                controller!.resumeCamera();
+              },
+              child: Text(language == 'Arabic'
+                  ? 'اعادة تشغيل القارئ'
+                  : 'Restart Scanner'),
+            ),
+          ),
+          Expanded(
+              child: Utils.isHandScanner
+                  ? _buildQRText()
+                  : _buildQrView(context)),
+        ],
+      ),
+    ),
+  );
 
   Widget _buildQRText() => TextField(
-        controller: textQRCode,
-        focusNode: focusNode,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 12),
-        // readOnly: true,
-        decoration: const InputDecoration(
-          labelText: 'كود الكيو آر',
-        ),
-        onChanged:
-            textQRCode.text.isNotEmpty ? _getQRData(textQRCode.text) : null,
-      );
+    controller: textQRCode,
+    focusNode: focusNode,
+    textAlign: TextAlign.center,
+    style: const TextStyle(fontSize: 12),
+    // readOnly: true,
+    decoration: const InputDecoration(
+      labelText: 'كود الكيو آر',
+    ),
+    onChanged:
+    textQRCode.text.isNotEmpty ? _getQRData(textQRCode.text) : null,
+  );
 
   _getQRData(String qrStr) {
     final qrString = QRBarcodeEncoder.toBase64Decode(qrStr);
@@ -1666,10 +1666,10 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
     int taxNumberLength = bytes[sellerLength + 3].toInt();
     int dateLength = bytes[sellerLength + taxNumberLength + 5].toInt();
     int totalLength =
-        bytes[sellerLength + taxNumberLength + dateLength + 7].toInt();
+    bytes[sellerLength + taxNumberLength + dateLength + 7].toInt();
     int vatLength =
-        bytes[sellerLength + taxNumberLength + dateLength + totalLength + 9]
-            .toInt();
+    bytes[sellerLength + taxNumberLength + dateLength + totalLength + 9]
+        .toInt();
     List<int> sellerBytes = [];
     List<int> taxNumberBytes = [];
     List<int> dateBytes = [];
@@ -1706,130 +1706,130 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
   }
 
   Widget buildVendor() => TextFormField(
-        controller: _vendor,
-        keyboardType: TextInputType.name,
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText: language == 'Arabic' ? 'اسم المورد' : 'Vendor Name',
-        ),
-        validator: (value) =>
-            value != null && value.isEmpty ? 'يجب إدخال اسم المورد' : null,
-      );
+    controller: _vendor,
+    keyboardType: TextInputType.name,
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText: language == 'Arabic' ? 'اسم المورد' : 'Vendor Name',
+    ),
+    validator: (value) =>
+    value != null && value.isEmpty ? 'يجب إدخال اسم المورد' : null,
+  );
 
   Widget buildDetails() => TextFormField(
-        controller: _details,
-        keyboardType: TextInputType.name,
-        maxLines: 3,
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText: language == 'Arabic' ? 'التفاصيل' : 'Details',
-        ),
-      );
+    controller: _details,
+    keyboardType: TextInputType.name,
+    maxLines: 3,
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText: language == 'Arabic' ? 'التفاصيل' : 'Details',
+    ),
+  );
 
   Widget buildVendorVatNumber() => TextFormField(
-        controller: _vendorVatNumber,
-        keyboardType: TextInputType.number,
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText:
-              language == 'Arabic' ? 'الرقم الضريبي للمورد' : 'Vendor VAT No',
-        ),
-        validator: (value) => value != null && value.length != 15
-            ? 'يجب إدخال الرقم الضريبي للمورد 15 رقم'
-            : null,
-      );
+    controller: _vendorVatNumber,
+    keyboardType: TextInputType.number,
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText:
+      language == 'Arabic' ? 'الرقم الضريبي للمورد' : 'Vendor VAT No',
+    ),
+    validator: (value) => value != null && value.length != 15
+        ? 'يجب إدخال الرقم الضريبي للمورد 15 رقم'
+        : null,
+  );
 
   Widget buildTotalPurchases() => TextFormField(
-        controller: _totalPurchases,
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText: language == 'Arabic' ? 'إجمالي الفاتورة' : 'Total Invoice',
-        ),
-        validator: (value) =>
-            value!.isEmpty ? 'يجب إدخال إجمالي الفاتورة' : null,
-        onChanged: (value) => _vatPurchases.text =
-            "${Utils.formatNoCurrency(num.parse(_totalPurchases.text) - (num.parse(_totalPurchases.text) / 1.15))}",
-      );
+    controller: _totalPurchases,
+    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText: language == 'Arabic' ? 'إجمالي الفاتورة' : 'Total Invoice',
+    ),
+    validator: (value) =>
+    value!.isEmpty ? 'يجب إدخال إجمالي الفاتورة' : null,
+    onChanged: (value) => _vatPurchases.text =
+    "${Utils.formatNoCurrency(num.parse(_totalPurchases.text) - (num.parse(_totalPurchases.text) / 1.15))}",
+  );
 
   Widget buildVatPurchases() => TextFormField(
-        controller: _vatPurchases,
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText:
-              language == 'Arabic' ? 'ضريبة القيمة المضافة' : 'VAT Amount',
-        ),
-        readOnly: true,
-      );
+    controller: _vatPurchases,
+    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText:
+      language == 'Arabic' ? 'ضريبة القيمة المضافة' : 'VAT Amount',
+    ),
+    readOnly: true,
+  );
 
   Widget buildPayer() => DropdownSearch<String>(
-        popupProps:
-            const PopupProps.menu(showSearchBox: true, showSelectedItems: true),
-        dropdownDecoratorProps: DropDownDecoratorProps(
-          baseStyle: fontStyle,
-          dropdownSearchDecoration: InputDecoration(
-              label: Text(language == 'Arabic' ? 'العميل' : 'Customer')),
-        ),
-        items: customers,
-        onChanged: (val) async {
-          int id = int.parse(val!.split("-")[0]);
-          Customer changedPayer = await FatooraDB.instance.getCustomerById(id);
-          setState(() {
-            _payer.text = val;
-            _payerVatNumber.text = changedPayer.vatNumber;
-          });
-        },
-        selectedItem: _payer.text,
-      );
+    popupProps:
+    const PopupProps.menu(showSearchBox: true, showSelectedItems: true),
+    dropdownDecoratorProps: DropDownDecoratorProps(
+      baseStyle: fontStyle,
+      dropdownSearchDecoration: InputDecoration(
+          label: Text(language == 'Arabic' ? 'العميل' : 'Customer')),
+    ),
+    items: customers,
+    onChanged: (val) async {
+      int id = int.parse(val!.split("-")[0]);
+      Customer changedPayer = await FatooraDB.instance.getCustomerById(id);
+      setState(() {
+        _payer.text = val;
+        _payerVatNumber.text = changedPayer.vatNumber;
+      });
+    },
+    selectedItem: _payer.text,
+  );
 
   Widget buildPayMethod() => DropdownSearch<String>(
-        popupProps: PopupProps.menu(
-            showSelectedItems: true,
-            constraints:
-                BoxConstraints(maxHeight: Platform.isAndroid ? 225 : 200)),
-        dropdownDecoratorProps: DropDownDecoratorProps(
-            baseStyle: fontStyle,
-            dropdownSearchDecoration: InputDecoration(
-                label: Text(language == 'Arabic' ? 'الدفع: ' : 'Pay method '))),
-        items: payMethod,
-        onChanged: (val) => setState(() {
-          selectedPayMethod = val;
-        }),
-        selectedItem: selectedPayMethod,
-      );
+    popupProps: PopupProps.menu(
+        showSelectedItems: true,
+        constraints:
+        BoxConstraints(maxHeight: Platform.isAndroid ? 225 : 200)),
+    dropdownDecoratorProps: DropDownDecoratorProps(
+        baseStyle: fontStyle,
+        dropdownSearchDecoration: InputDecoration(
+            label: Text(language == 'Arabic' ? 'الدفع: ' : 'Pay method '))),
+    items: payMethod,
+    onChanged: (val) => setState(() {
+      selectedPayMethod = val;
+    }),
+    selectedItem: selectedPayMethod,
+  );
 
   Widget buildInvoiceTemp() => DropdownSearch<String>(
-        popupProps: PopupProps.menu(
-            showSelectedItems: true,
-            constraints:
-                BoxConstraints(maxHeight: Platform.isAndroid ? 225 : 240)),
-        dropdownDecoratorProps: DropDownDecoratorProps(
-            baseStyle: fontStyle,
-            dropdownSearchDecoration: InputDecoration(
-                label: Text(language == 'Arabic' ? 'النموذج: ' : 'Temp'))),
-        items: temp,
-        onChanged: (val) {
-          selectedTemp = val!;
-          getTemp(selectedTemp!);
-        },
-        selectedItem: selectedTemp,
-      );
+    popupProps: PopupProps.menu(
+        showSelectedItems: true,
+        constraints:
+        BoxConstraints(maxHeight: Platform.isAndroid ? 225 : 240)),
+    dropdownDecoratorProps: DropDownDecoratorProps(
+        baseStyle: fontStyle,
+        dropdownSearchDecoration: InputDecoration(
+            label: Text(language == 'Arabic' ? 'النموذج: ' : 'Temp'))),
+    items: temp,
+    onChanged: (val) {
+      selectedTemp = val!;
+      getTemp(selectedTemp!);
+    },
+    selectedItem: selectedTemp,
+  );
 
   Widget buildPayerVatNumber() => Text(
-        _payerVatNumber.text,
-        style: fontStyle,
-      );
+    _payerVatNumber.text,
+    style: fontStyle,
+  );
 
   Widget buildProject() => TextFormField(
-        controller: _project,
-        keyboardType: TextInputType.name,
-        style: fontStyle,
-        decoration: InputDecoration(
-          labelText: language == 'Arabic' ? 'اسم المشروع' : 'Project Name',
-        ),
-        // onChanged: onChangedPayer,
-      );
+    controller: _project,
+    keyboardType: TextInputType.name,
+    style: fontStyle,
+    decoration: InputDecoration(
+      labelText: language == 'Arabic' ? 'اسم المشروع' : 'Project Name',
+    ),
+    // onChanged: onChangedPayer,
+  );
 
   _selectDate() async {
     DateTime? picked = await showDatePicker(
@@ -1854,35 +1854,35 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
   }
 
   Widget buildDate() => InkWell(
-        onTap: () => _selectDate(),
-        child: IgnorePointer(
-          child: TextFormField(
-            controller: _date,
-            keyboardType: TextInputType.text,
-            style: fontStyle,
-            decoration: InputDecoration(
-              labelText:
-                  language == 'Arabic' ? 'تاريخ الفاتورة' : 'Invoice Date',
-            ),
-            // onChanged: onChangedPayer,
-          ),
+    onTap: () => _selectDate(),
+    child: IgnorePointer(
+      child: TextFormField(
+        controller: _date,
+        keyboardType: TextInputType.text,
+        style: fontStyle,
+        decoration: InputDecoration(
+          labelText:
+          language == 'Arabic' ? 'تاريخ الفاتورة' : 'Invoice Date',
         ),
-      );
+        // onChanged: onChangedPayer,
+      ),
+    ),
+  );
 
   Widget buildSupplyDate() => InkWell(
-        onTap: () => _selectSupplyDate(),
-        child: IgnorePointer(
-          child: TextFormField(
-            controller: _supplyDate,
-            keyboardType: TextInputType.text,
-            style: fontStyle,
-            decoration: InputDecoration(
-              labelText: language == 'Arabic' ? 'تاريخ التوريد' : 'Supply Date',
-            ),
-            // onChanged: onChangedPayer,
-          ),
+    onTap: () => _selectSupplyDate(),
+    child: IgnorePointer(
+      child: TextFormField(
+        controller: _supplyDate,
+        keyboardType: TextInputType.text,
+        style: fontStyle,
+        decoration: InputDecoration(
+          labelText: language == 'Arabic' ? 'تاريخ التوريد' : 'Supply Date',
         ),
-      );
+        // onChanged: onChangedPayer,
+      ),
+    ),
+  );
 
   void saveAndPrint() {
     setState(() {
@@ -1913,8 +1913,8 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
       final isValid = Platform.isAndroid
           ? true
           : isManualInvoice
-              ? _key1.currentState!.validate()
-              : true;
+          ? _key1.currentState!.validate()
+          : true;
       final hasLines = items.isNotEmpty ? true : false;
 
       if (!hasLines) {
@@ -1992,21 +1992,21 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
       // getTemp(selectedTemp);
       Utils.isA4Invoice && isEstimate
           ? await InvoiceTemp1.generate(
-              invoice, currentPayer, seller, items, tempId!, template)
+          invoice, currentPayer, seller, items, tempId!, template)
           : Utils.isA4Invoice && isPreview
-              ? await InvoiceTemp1.generate(
-                  invoice, currentPayer, seller, items, tempId!, template)
-              : await PdfReceipt.generate(
-                  invoice,
-                  currentPayer,
-                  seller,
-                  items,
-                  invoice.posted == 1
-                      ? 'فاتورة مبيعات ضريبية مرحلة'
-                      : 'فاتورة مبيعات ضريبية',
-                  invoice.project,
-                  Utils.isProVersion,
-                  isPreview);
+          ? await InvoiceTemp1.generate(
+          invoice, currentPayer, seller, items, tempId!, template)
+          : await PdfReceipt.generate(
+          invoice,
+          currentPayer,
+          seller,
+          items,
+          invoice.posted == 1
+              ? 'فاتورة مبيعات ضريبية مرحلة'
+              : 'فاتورة مبيعات ضريبية',
+          invoice.project,
+          Utils.isProVersion,
+          isPreview);
     } else {
       String newTtl = _totalPurchases.text.replaceAll(',', '');
       num ttl = num.parse(newTtl);
@@ -2050,21 +2050,21 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
       // getTemp(selectedTemp);
       Utils.isA4Invoice && isEstimate
           ? await InvoiceTemp1.generate(
-              invoice, currentPayer, seller, items, tempId!, template)
+          invoice, currentPayer, seller, items, tempId!, template)
           : Utils.isA4Invoice && isPreview
-              ? await InvoiceTemp1.generate(
-                  invoice, currentPayer, seller, items, tempId!, template)
-              : await PdfReceipt.generate(
-                  invoice,
-                  currentPayer,
-                  seller,
-                  items,
-                  invoice.posted == 1
-                      ? 'فاتورة مبيعات ضريبية مرحلة'
-                      : 'فاتورة مبيعات ضريبية',
-                  invoice.project,
-                  Utils.isProVersion,
-                  isPreview);
+          ? await InvoiceTemp1.generate(
+          invoice, currentPayer, seller, items, tempId!, template)
+          : await PdfReceipt.generate(
+          invoice,
+          currentPayer,
+          seller,
+          items,
+          invoice.posted == 1
+              ? 'فاتورة مبيعات ضريبية مرحلة'
+              : 'فاتورة مبيعات ضريبية',
+          invoice.project,
+          Utils.isProVersion,
+          isPreview);
       // }
     } else {
       num ttl = num.parse(_totalPurchases.text);
@@ -2156,23 +2156,23 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
   Widget _buildQrView(BuildContext context) {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
-            MediaQuery.of(context).size.height < 400)
+        MediaQuery.of(context).size.height < 400)
         ? 200.0
         : 300.0;
     // To ensure the Scanner view is properly sizes after rotation
     // we need to listen for Flutter SizeChanged notification and update controller
     return Platform.isAndroid
         ? sc.QRView(
-            key: qrKey,
-            onQRViewCreated: _onQRViewCreated,
-            overlay: sc.QrScannerOverlayShape(
-                borderColor: Colors.red,
-                borderRadius: 10,
-                borderLength: 30,
-                borderWidth: 10,
-                cutOutSize: scanArea),
-            onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
-          )
+      key: qrKey,
+      onQRViewCreated: _onQRViewCreated,
+      overlay: sc.QrScannerOverlayShape(
+          borderColor: Colors.red,
+          borderRadius: 10,
+          borderLength: 30,
+          borderWidth: 10,
+          cutOutSize: scanArea),
+      onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
+    )
         : Container();
   }
 
@@ -2191,10 +2191,10 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
         int taxNumberLength = bytes[sellerLength + 3].toInt();
         int dateLength = bytes[sellerLength + taxNumberLength + 5].toInt();
         int totalLength =
-            bytes[sellerLength + taxNumberLength + dateLength + 7].toInt();
+        bytes[sellerLength + taxNumberLength + dateLength + 7].toInt();
         int vatLength =
-            bytes[sellerLength + taxNumberLength + dateLength + totalLength + 9]
-                .toInt();
+        bytes[sellerLength + taxNumberLength + dateLength + totalLength + 9]
+            .toInt();
         List<int> sellerBytes = [];
         List<int> taxNumberBytes = [];
         List<int> dateBytes = [];
@@ -2265,18 +2265,18 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
         tempId = 2;
         template = await FatooraDB.instance.getTemplateById(tempId!);
         break;
-      case 'نموذج 3':
-        tempId = 3;
-        template = await FatooraDB.instance.getTemplateById(tempId!);
-        break;
-      case 'نموذج 4':
-        tempId = 4;
-        template = await FatooraDB.instance.getTemplateById(tempId!);
-        break;
-      case 'نموذج 5':
-        tempId = 5;
-        template = await FatooraDB.instance.getTemplateById(tempId!);
-        break;
+      // case 'نموذج 3':
+      //   tempId = 3;
+      //   template = await FatooraDB.instance.getTemplateById(tempId!);
+      //   break;
+      // case 'نموذج 4':
+      //   tempId = 4;
+      //   template = await FatooraDB.instance.getTemplateById(tempId!);
+      //   break;
+      // case 'نموذج 5':
+      //   tempId = 5;
+      //   template = await FatooraDB.instance.getTemplateById(tempId!);
+      //   break;
       default:
         break;
     }

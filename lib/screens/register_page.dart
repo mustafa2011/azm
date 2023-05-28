@@ -75,6 +75,7 @@ class _RegisterState extends State<Register> {
 
   @override
   void initState() {
+    // FatooraDB.instance.close();
     getVersion();
     super.initState();
     _supportNumber.text = Utils.defSupportNumber;
@@ -237,26 +238,6 @@ class _RegisterState extends State<Register> {
                       ],
                     ),
                   ),
-                  /*PopupMenuItem<int>(
-                    value: 1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text('تغيير الشعار',
-                            style: TextStyle(
-                                color: AppColor.primary,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold)),
-                        Icon(
-                          Icons.assistant_photo,
-                          color: AppColor.primary,
-                          size: 30,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuItem<int>(
-                      height: 2, enabled: false, child: Divider(thickness: 2)),*/
                   const PopupMenuItem<int>(
                     value: 2,
                     child: Row(

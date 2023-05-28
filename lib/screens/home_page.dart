@@ -27,7 +27,7 @@ import '/widgets/app_colors.dart';
 import 'customers_page.dart';
 import 'invoices_page.dart';
 
-const trial = 15; // set max days for demo version
+const trial = 2; // set max days for demo version
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -59,6 +59,7 @@ class _HomePageState extends State<HomePage> {
   num totalPurchases = 0;
   num totalVAT = 0;
   dynamic vat;
+
   // bool existLocalUser = false;
   bool validLicense = false;
   String strVersion = 'نسخة تجريبية';
@@ -114,9 +115,13 @@ class _HomePageState extends State<HomePage> {
         customersCount = await db.getCustomerCount() ?? 0;
         invoicesCount = await db.getInvoicesCount() ?? 0;
         purchasesCount = await db.getPurchasesCount() ?? 0;
-        totalSales = await db.getTotalSales(DateTime.now().year) ?? 0.0;
+        totalSales = await db.getTotalSales(DateTime
+            .now()
+            .year) ?? 0.0;
         totalVAT = totalSales - (totalSales / 1.15);
-        totalPurchases = await db.getTotalPurchases(DateTime.now().year) ?? 0.0;
+        totalPurchases = await db.getTotalPurchases(DateTime
+            .now()
+            .year) ?? 0.0;
 
         DateTime? startDateTime = DateTime.parse(userSetting[0].startDateTime);
         DateTime validationDateTime = DateTime(
@@ -124,41 +129,39 @@ class _HomePageState extends State<HomePage> {
           startDateTime.month,
           startDateTime.day + trial,
         );
-        int? intCode = int.parse(userSetting[0].cellphone) + userSetting[0].id! + (startDateTime.month + 1) + DateTime.now().year;
-        String? validationCode = toHex(intCode);
-        debugPrint("Activation code: $validationCode");
-        debugPrint("validationDateTime: $validationDateTime");
-        debugPrint("DateTime.now: ${DateTime.now()}");
-        // String? activationCode = userSetting[0].activationCode;
-        // if (validationCode == activationCode) {
-
         if (validLicense) {
           setState(() {
-            // validLicense = true;
             strVersion =
             language == 'Arabic' ? 'النسخة الأصلية' : 'Original Version';
           });
         } else {
-          if (validationDateTime.year < DateTime.now().year) {
-            if (validationDateTime.month == DateTime.now().month) {
-              // setState(() => validLicense = false);
+          if (validationDateTime.year < DateTime
+              .now()
+              .year) {
+            if (validationDateTime.month == DateTime
+                .now()
+                .month) {
               messageBox(language == 'Arabic'
                   ? 'يجب عليك تجديد الاشتراك السنوي قبل نهاية الشهر الحالي\n'
                   'رقم المستخدم: $uid\n'
                   'رقم الجوال: $cellphone\n'
-                  'قم بنسخ هذه الرسالة وأرسلها إلى واتساب رقم: ${Utils.defSupportNumber}\n'
+                  'قم بنسخ هذه الرسالة وأرسلها إلى واتساب رقم: ${Utils
+                  .defSupportNumber}\n'
                   'للحصول كود التفعيل الجديد'
                   : 'You need to renew subscription before end of this month\n'
                   'user no: $uid\n'
                   'cellphone no: $cellphone\n'
-                  'Copy this message and send it to whatsApp no ${Utils.defSupportNumber}\n'
+                  'Copy this message and send it to whatsApp no ${Utils
+                  .defSupportNumber}\n'
                   'to get the new activation code');
-            } else if (validationDateTime.month < DateTime.now().month) {
-              // setState(() => validLicense = false);
-              Get.to(()=> SettingsPage(validLicense: validLicense));
-            } else if (validationDateTime.month > DateTime.now().month) {
+            } else if (validationDateTime.month < DateTime
+                .now()
+                .month) {
+              Get.to(() => SettingsPage(validLicense: validLicense));
+            } else if (validationDateTime.month > DateTime
+                .now()
+                .month) {
               setState(() {
-                // validLicense = true;
                 strVersion = language == 'Arabic'
                     ? 'النسخة الأصلية'
                     : 'Original Version';
@@ -166,10 +169,10 @@ class _HomePageState extends State<HomePage> {
             }
           } else {
             if (validationDateTime.isBefore(DateTime.now())) {
-              Get.to(()=> SettingsPage(validLicense: validLicense));
+              Get.to(() => SettingsPage(validLicense: validLicense));
             } else {
-              // setState(() => validLicense = true);
-              setState(() => strVersion =
+              setState(() =>
+              strVersion =
               language == 'Arabic' ? 'نسخة تجريبية' : 'Trial version');
             }
           }
@@ -238,8 +241,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double h = MediaQuery.of(context).size.height;
-    double w = MediaQuery.of(context).size.width;
+    double h = MediaQuery
+        .of(context)
+        .size
+        .height;
+    double w = MediaQuery
+        .of(context)
+        .size
+        .width;
     return Scaffold(
       body: Container(
         height: h,
@@ -257,113 +266,139 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildHeader() => Container(
-    height: MediaQuery.of(context).size.height * 0.30,
-    color: AppColor.secondary,
-    child: Stack(
-      children: [
-        Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width * 0.45,
-          color: AppColor.primary,
-        ),
-        buildHeaderBackground(),
-        buildTextHeader(),
-      ],
-    ),
-  );
-
-  Widget buildHeaderBackground() => Positioned(
-      top: 0,
-      right: 0,
-      left: 70,
-      bottom: 0,
-      child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.fitHeight,
-              image: AssetImage("assets/images/header_page.png"),
-            ),
-          )));
-
-  Widget buildTextHeader() => Container(
-    width: MediaQuery.of(context).size.width,
-    padding: const EdgeInsets.only(right: 20, left: 20),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          language == 'Arabic' ? 'الواضح فاتورة' : 'Alwadeh Fatoora',
-          style: const TextStyle(
-            fontSize: 35,
-            color: AppColor.secondary,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget buildHeader() =>
+      Container(
+        height: MediaQuery
+            .of(context)
+            .size
+            .height * 0.30,
+        color: AppColor.secondary,
+        child: Stack(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  language == 'Arabic'
-                      ? "رقم المستخدم: $uid"
-                      : "User No.: $uid",
-                  style: const TextStyle(
-                      color: AppColor.secondary,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  language == 'Arabic'
-                      ? 'رقم الدعم الفني: $supportNumber'
-                      : 'Support No: $supportNumber',
-                  style: const TextStyle(fontSize: 10, color: Colors.white),
-                ),
-                Utils.space(2, 0),
-                Text(
-                  sellerName,
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-              ],
+            Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.45,
+              color: AppColor.primary,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  strVersion,
-                  style: const TextStyle(
-                      color: AppColor.primary, fontWeight: FontWeight.bold),
+            buildHeaderBackground(),
+            buildTextHeader(),
+          ],
+        ),
+      );
+
+  Widget buildHeaderBackground() =>
+      Positioned(
+          top: 0,
+          right: 0,
+          left: 70,
+          bottom: 0,
+          child: Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.fitHeight,
+                  image: AssetImage("assets/images/header_page.png"),
                 ),
-                Text(
-                  "ver: $pkgVersion[$dbVersion]",
-                  style: const TextStyle(color: AppColor.primary),
+              )));
+
+  Widget buildTextHeader() =>
+      Container(
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        padding: const EdgeInsets.only(right: 20, left: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              language == 'Arabic' ? 'الواضح فاتورة' : 'Alwadeh Fatoora',
+              style: const TextStyle(
+                fontSize: 35,
+                color: AppColor.secondary,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            SizedBox(height: MediaQuery
+                .of(context)
+                .size
+                .height * 0.02),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      language == 'Arabic'
+                          ? "رقم المستخدم: $uid"
+                          : "User No.: $uid",
+                      style: const TextStyle(
+                          color: AppColor.secondary,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      language == 'Arabic'
+                          ? 'رقم الدعم الفني: $supportNumber'
+                          : 'Support No: $supportNumber',
+                      style: const TextStyle(fontSize: 10, color: Colors.white),
+                    ),
+                    Utils.space(2, 0),
+                    Text(
+                      sellerName,
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      strVersion,
+                      style: const TextStyle(
+                          color: AppColor.primary, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "ver: $pkgVersion[$dbVersion]",
+                      style: const TextStyle(color: AppColor.primary),
+                    ),
+                  ],
                 ),
               ],
             ),
           ],
         ),
-      ],
-    ),
-  );
+      );
 
-  TextStyle bodyStyle() => const TextStyle(
-    fontSize: 12,
-    fontWeight: FontWeight.normal,
-    fontFamily: "Cairo",
-  );
+  TextStyle bodyStyle() =>
+      const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.normal,
+        fontFamily: "Cairo",
+      );
 
-  TextStyle headerStyle() => const TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.bold,
-    color: AppColor.primary,
-    fontFamily: "Cairo",
-  );
+  TextStyle headerStyle() =>
+      const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+        color: AppColor.primary,
+        fontFamily: "Cairo",
+      );
 
   Future getNewsList() async {
     try {
@@ -380,242 +415,278 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget buildBody(double h) => Positioned(
-    top: h,
-    left: 0,
-    child: Column(
-      children: [
-        Platform.isAndroid
-            ? Column(
+  Widget buildBody(double h) =>
+      Positioned(
+        top: h,
+        left: 0,
+        child: Column(
           children: [
-            InkWell(
-                onTap: () => checkAuthentication(),
-                child: Row(
-                  children: [
-                    Text('احصائيات عامة', style: headerStyle()),
-                    Utils.space(0, 4),
-                    const Icon(
-                      Icons.refresh,
-                      color: AppColor.primary,
-                    )
-                  ],
-                )),
-            Container(
-              color: AppColor.background,
-              padding: const EdgeInsets.only(left: 5, right: 5),
-              height: isShowNews
-                  ? MediaQuery.of(context).size.height * 0.25
-                  : MediaQuery.of(context).size.height *
-                  (0.25 + 0.17),
-              width: MediaQuery.of(context).size.width,
-              child: makeWindowsDashboard(),
-            ),
-            Row(children: [
-              InkWell(
-                  onTap: () => getNewsList(),
-                  child: Row(
-                    children: [
-                      Text('أخبار الواضح', style: headerStyle()),
-                      Utils.space(0, 4),
-                      const Icon(
-                        Icons.refresh,
-                        // Icons.keyboard_arrow_down,
-                        color: AppColor.primary,
-                      ),
-                    ],
-                  )),
-              Utils.space(0, 4),
-              InkWell(
-                onTap: () => setState(() => isShowNews = !isShowNews),
-                child: Icon(
-                  isShowNews
-                      ? Icons.keyboard_arrow_down_outlined
-                      : Icons.keyboard_arrow_up_outlined,
-                  color: AppColor.primary,
-                ),
-              ),
-            ]),
-            isShowNews
-                ? Container(
-              color: AppColor.background,
-              padding: const EdgeInsets.only(
-                  left: 5, right: 5, bottom: 0),
-              height: isShowNews
-                  ? MediaQuery.of(context).size.height * 0.17
-                  : 0,
-              width: MediaQuery.of(context).size.width,
-              child: makeNewsDashboard(),
-            )
-                : Container(),
-          ],
-        )
-            : Platform.isWindows
-            ? Row(
-          children: [
-            Column(
-              children: [
-                Row(
-                  children: [
-                    Text('احصائيات عامة', style: headerStyle()),
-                    Utils.space(0, 4),
-                    InkWell(
-                      onTap: () => checkAuthentication(),
-                      child: const Icon(
-                        Icons.refresh,
-                        color: AppColor.primary,
-                      ),
-                    )
-                  ],
-                ),
-                Container(
-                  color: AppColor.background,
-                  padding:
-                  const EdgeInsets.only(left: 5, right: 5),
-                  height:
-                  MediaQuery.of(context).size.height * 0.45,
-                  width: isShowNews
-                      ? MediaQuery.of(context).size.width * 0.49
-                      : MediaQuery.of(context).size.width * 0.96,
-                  child: makeWindowsDashboard(),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                InkWell(
-                  onTap: () =>
-                      setState(() => isShowNews = !isShowNews),
-                  child: Icon(
-                    isShowNews
-                        ? Icons.keyboard_arrow_left_outlined
-                        : Icons.keyboard_arrow_right_outlined,
-                    color: AppColor.primary,
-                  ),
-                ),
-                InkWell(
-                  onTap: () =>
-                      setState(() => isShowNews = !isShowNews),
-                  child: buildRotateText(' أخبار الواضح'),
-                ),
-                InkWell(
-                  onTap: () =>
-                      setState(() => isShowNews = !isShowNews),
-                  child: Icon(
-                    isShowNews
-                        ? Icons.keyboard_arrow_left_outlined
-                        : Icons.keyboard_arrow_right_outlined,
-                    color: AppColor.primary,
-                  ),
-                ),
-              ],
-            ),
-            isShowNews
+            Platform.isAndroid
                 ? Column(
               children: [
-                Row(children: [
-                  Text('أخبار الواضح',
-                      style: headerStyle()),
-                  Utils.space(0, 4),
-                  InkWell(
-                    onTap: () => getNewsList(),
-                    child: const Icon(
-                      Icons.refresh,
-                      color: AppColor.primary,
-                    ),
-                  )
-                ]),
+                InkWell(
+                    onTap: () => checkAuthentication(),
+                    child: Row(
+                      children: [
+                        Text('احصائيات عامة', style: headerStyle()),
+                        Utils.space(0, 4),
+                        const Icon(
+                          Icons.refresh,
+                          color: AppColor.primary,
+                        )
+                      ],
+                    )),
                 Container(
                   color: AppColor.background,
-                  padding: const EdgeInsets.only(
-                      left: 5, right: 5),
-                  height:
-                  MediaQuery.of(context).size.height *
-                      0.45,
-                  width: MediaQuery.of(context).size.width *
-                      0.49,
-                  child: makeNewsDashboard(),
+                  padding: const EdgeInsets.only(left: 5, right: 5),
+                  height: isShowNews
+                      ? MediaQuery
+                      .of(context)
+                      .size
+                      .height * 0.25
+                      : MediaQuery
+                      .of(context)
+                      .size
+                      .height *
+                      (0.25 + 0.17),
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  child: makeWindowsDashboard(),
                 ),
+                Row(children: [
+                  InkWell(
+                      onTap: () => getNewsList(),
+                      child: Row(
+                        children: [
+                          Text('أخبار الواضح', style: headerStyle()),
+                          Utils.space(0, 4),
+                          const Icon(
+                            Icons.refresh,
+                            // Icons.keyboard_arrow_down,
+                            color: AppColor.primary,
+                          ),
+                        ],
+                      )),
+                  Utils.space(0, 4),
+                  InkWell(
+                    onTap: () => setState(() => isShowNews = !isShowNews),
+                    child: Icon(
+                      isShowNews
+                          ? Icons.keyboard_arrow_down_outlined
+                          : Icons.keyboard_arrow_up_outlined,
+                      color: AppColor.primary,
+                    ),
+                  ),
+                ]),
+                isShowNews
+                    ? Container(
+                  color: AppColor.background,
+                  padding: const EdgeInsets.only(
+                      left: 5, right: 5, bottom: 0),
+                  height: isShowNews
+                      ? MediaQuery
+                      .of(context)
+                      .size
+                      .height * 0.17
+                      : 0,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  child: makeNewsDashboard(),
+                )
+                    : Container(),
+              ],
+            )
+                : Platform.isWindows
+                ? Row(
+              children: [
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text('احصائيات عامة', style: headerStyle()),
+                        Utils.space(0, 4),
+                        InkWell(
+                          onTap: () => checkAuthentication(),
+                          child: const Icon(
+                            Icons.refresh,
+                            color: AppColor.primary,
+                          ),
+                        )
+                      ],
+                    ),
+                    Container(
+                      color: AppColor.background,
+                      padding:
+                      const EdgeInsets.only(left: 5, right: 5),
+                      height:
+                      MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.45,
+                      width: isShowNews
+                          ? MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.49
+                          : MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.96,
+                      child: makeWindowsDashboard(),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    InkWell(
+                      onTap: () =>
+                          setState(() => isShowNews = !isShowNews),
+                      child: Icon(
+                        isShowNews
+                            ? Icons.keyboard_arrow_left_outlined
+                            : Icons.keyboard_arrow_right_outlined,
+                        color: AppColor.primary,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () =>
+                          setState(() => isShowNews = !isShowNews),
+                      child: buildRotateText(' أخبار الواضح'),
+                    ),
+                    InkWell(
+                      onTap: () =>
+                          setState(() => isShowNews = !isShowNews),
+                      child: Icon(
+                        isShowNews
+                            ? Icons.keyboard_arrow_left_outlined
+                            : Icons.keyboard_arrow_right_outlined,
+                        color: AppColor.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                isShowNews
+                    ? Column(
+                  children: [
+                    Row(children: [
+                      Text('أخبار الواضح',
+                          style: headerStyle()),
+                      Utils.space(0, 4),
+                      InkWell(
+                        onTap: () => getNewsList(),
+                        child: const Icon(
+                          Icons.refresh,
+                          color: AppColor.primary,
+                        ),
+                      )
+                    ]),
+                    Container(
+                      color: AppColor.background,
+                      padding: const EdgeInsets.only(
+                          left: 5, right: 5),
+                      height:
+                      MediaQuery
+                          .of(context)
+                          .size
+                          .height *
+                          0.45,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width *
+                          0.49,
+                      child: makeNewsDashboard(),
+                    ),
+                  ],
+                )
+                    : Container(),
               ],
             )
                 : Container(),
-          ],
-        )
-            : Container(),
-        Row(
-          children: [
-            NewButton(
-              icon: Icons.handshake_outlined,
-              text: language == 'Arabic'
-                  ? "الإقرارات الضريبية"
-                  : "ZAKAT Endorsement",
-              onTap: () => Get.to(() => const VatEndorsementPage()),
-              radius: 15,
-              iconSize: 30,
-              fontSize: 16,
-              backgroundColor: AppColor.secondary,
-              iconColor: AppColor.primary,
+            Row(
+              children: [
+                NewButton(
+                  icon: Icons.handshake_outlined,
+                  text: language == 'Arabic'
+                      ? "الإقرارات الضريبية"
+                      : "ZAKAT Endorsement",
+                  onTap: () => Get.to(() => const VatEndorsementPage()),
+                  radius: 15,
+                  iconSize: 30,
+                  fontSize: 16,
+                  backgroundColor: AppColor.secondary,
+                  iconColor: AppColor.primary,
+                ),
+                const SizedBox(width: 10),
+                NewButton(
+                  icon: Icons.find_in_page_rounded,
+                  text: language == 'Arabic' ? "التقارير" : "Reports",
+                  onTap: () => Get.to(() => const ReportsPage()),
+                  radius: 15,
+                  iconSize: 30,
+                  fontSize: 16,
+                  backgroundColor: AppColor.secondary,
+                  iconColor: AppColor.primary,
+                ),
+              ],
             ),
-            const SizedBox(width: 10),
-            NewButton(
-              icon: Icons.find_in_page_rounded,
-              text: language == 'Arabic' ? "التقارير" : "Reports",
-              onTap: () => Get.to(() => const ReportsPage()),
-              radius: 15,
-              iconSize: 30,
-              fontSize: 16,
-              backgroundColor: AppColor.secondary,
-              iconColor: AppColor.primary,
-            ),
-          ],
-        ),
-        Utils.space(2, 0),
-        Container(
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.only(left: 5, right: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
+            Utils.space(2, 0),
+            Container(
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
+              padding: const EdgeInsets.only(left: 5, right: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  NewButton(
-                    icon: Icons.store,
-                    textPositionDown: false,
-                    text: language == 'Arabic' ? "منتجات" : "Products",
-                    onTap: () => Get.to(() => const ProductsPage()),
+                  Row(
+                    children: [
+                      NewButton(
+                        icon: Icons.store,
+                        textPositionDown: false,
+                        text: language == 'Arabic' ? "منتجات" : "Products",
+                        onTap: () => Get.to(() => const ProductsPage()),
+                      ),
+                      const SizedBox(width: 3),
+                      NewButton(
+                        icon: Icons.person_pin_rounded,
+                        textPositionDown: false,
+                        text: language == 'Arabic' ? "عملاء" : "Customers",
+                        onTap: () => Get.to(() => const CustomersPage()),
+                      ),
+                      const SizedBox(width: 3),
+                      NewButton(
+                        icon: Icons.money, // .point_of_sale,
+                        textPositionDown: false,
+                        text: language == 'Arabic' ? "فواتير" : "Invoices",
+                        onTap: () => Get.to(() => const InvoicesPage()),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 3),
                   NewButton(
-                    icon: Icons.person_pin_rounded,
+                    icon: Icons.settings,
                     textPositionDown: false,
-                    text: language == 'Arabic' ? "عملاء" : "Customers",
-                    onTap: () => Get.to(() => const CustomersPage()),
-                  ),
-                  const SizedBox(width: 3),
-                  NewButton(
-                    icon: Icons.money, // .point_of_sale,
-                    textPositionDown: false,
-                    text: language == 'Arabic' ? "فواتير" : "Invoices",
-                    onTap: () => Get.to(() => const InvoicesPage()),
+                    text: language == 'Arabic' ? "اعدادات" : "Setting",
+                    onTap: () =>
+                        Get.to(() => SettingsPage(validLicense: validLicense)),
                   ),
                 ],
               ),
-              NewButton(
-                icon: Icons.settings,
-                textPositionDown: false,
-                text: language == 'Arabic' ? "اعدادات" : "Setting",
-                onTap: () => Get.to(()=> SettingsPage(validLicense: validLicense)),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 
-  Widget buildRotateText(String text) => Wrap(
-    direction: Axis.vertical,
-    children: verticalText(text),
-  );
+  Widget buildRotateText(String text) =>
+      Wrap(
+        direction: Axis.vertical,
+        children: verticalText(text),
+      );
 
   List<Widget> verticalText(String text) {
     List<Widget> res = [];
@@ -629,8 +700,8 @@ class _HomePageState extends State<HomePage> {
     return res;
   }
 
-  Widget makeDashboardItem(
-      String result, String title, String result1, String title1) {
+  Widget makeDashboardItem(String result, String title, String result1,
+      String title1) {
     return Card(
         elevation: 8.0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -773,7 +844,10 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (BuildContext context, int index) =>
                 Column(children: [
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.75,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.75,
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -787,130 +861,146 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  Widget makeNewsDashboard() => Card(
-      elevation: 8.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      margin: const EdgeInsets.all(8.0),
-      child: Container(
-        child: news.isEmpty && Platform.isWindows
-            ? isLoadingNews
-            ? const Loading()
-            : Center(
-          child: IconButton(
-            icon: const Icon(Icons.refresh),
-            iconSize: 50,
-            color: AppColor.secondary,
-            tooltip: 'تحديث الأخبار',
-            onPressed: () {
-              getNewsList();
-            },
-          ),
-        )
-            : isLoadingNews
-            ? const Loading()
-            : ListView.builder(
-          // controller: _scrollController,
-          padding:
-          const EdgeInsets.only(left: 15, right: 10, top: 10),
-          itemCount: news.length,
-          itemBuilder: (BuildContext context, int index) => Container(
-            height: 45,
-            color:
-            index % 2 == 1 ? AppColor.background : Colors.white24,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                          width: 90,
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Text((news[index].date).toString(),
-                              textAlign: TextAlign.right,
-                              style: bodyStyle())),
-                      SizedBox(
-                          width: Platform.isAndroid
-                              ? 245
-                              : MediaQuery.of(context).size.width *
-                              0.30,
-                          child: Text(news[index].title.toString(),
-                              style: bodyStyle())),
-                    ],
+  Widget makeNewsDashboard() =>
+      Card(
+          elevation: 8.0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20)),
+          margin: const EdgeInsets.all(8.0),
+          child: Container(
+            child: news.isEmpty && Platform.isWindows
+                ? isLoadingNews
+                ? const Loading()
+                : Center(
+              child: IconButton(
+                icon: const Icon(Icons.refresh),
+                iconSize: 50,
+                color: AppColor.secondary,
+                tooltip: 'تحديث الأخبار',
+                onPressed: () {
+                  getNewsList();
+                },
+              ),
+            )
+                : isLoadingNews
+                ? const Loading()
+                : ListView.builder(
+              // controller: _scrollController,
+              padding:
+              const EdgeInsets.only(left: 15, right: 10, top: 10),
+              itemCount: news.length,
+              itemBuilder: (BuildContext context, int index) =>
+                  Container(
+                    height: 45,
+                    color:
+                    index % 2 == 1 ? AppColor.background : Colors.white24,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                  width: 90,
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Text((news[index].date).toString(),
+                                      textAlign: TextAlign.right,
+                                      style: bodyStyle())),
+                              SizedBox(
+                                  width: Platform.isAndroid
+                                      ? 245
+                                      : MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width *
+                                      0.30,
+                                  child: Text(news[index].title.toString(),
+                                      style: bodyStyle())),
+                            ],
+                          ),
+                          InkWell(
+                            onTap: () =>
+                                launchUrl(Uri.parse(news[index].link)),
+                            child: const Icon(Icons.link),
+                          ),
+                        ]),
                   ),
-                  InkWell(
-                    onTap: () =>
-                        launchUrl(Uri.parse(news[index].link)),
-                    child: const Icon(Icons.link),
-                  ),
-                ]),
-          ),
-        ),
-      ));
+            ),
+          ));
 
-  Widget buildBottomMenu() => Positioned(
-    left: 0,
-    bottom: 0,
-    child: SizedBox(
-      height: MediaQuery.of(context).size.height * 0.11,
-      width: MediaQuery.of(context).size.width,
-      child: Container(
-        padding:
-        const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
-        color: AppColor.background,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
+  Widget buildBottomMenu() =>
+      Positioned(
+        left: 0,
+        bottom: 0,
+        child: SizedBox(
+          height: MediaQuery
+              .of(context)
+              .size
+              .height * 0.11,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
+          child: Container(
+            padding:
+            const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
+            color: AppColor.background,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                NewButton(
-                  icon: Icons.store,
-                  textPositionDown: false,
-                  text: language == 'Arabic' ? "منتجات" : "Products",
-                  onTap: () => Get.to(() => const ProductsPage()),
+                Row(
+                  children: [
+                    NewButton(
+                      icon: Icons.store,
+                      textPositionDown: false,
+                      text: language == 'Arabic' ? "منتجات" : "Products",
+                      onTap: () => Get.to(() => const ProductsPage()),
+                    ),
+                    const SizedBox(width: 3),
+                    NewButton(
+                      icon: Icons.person_pin_rounded,
+                      textPositionDown: false,
+                      text: language == 'Arabic' ? "عملاء" : "Customers",
+                      onTap: () => Get.to(() => const CustomersPage()),
+                    ),
+                    const SizedBox(width: 3),
+                    NewButton(
+                      icon: Icons.money, // .point_of_sale,
+                      textPositionDown: false,
+                      text: language == 'Arabic' ? "فواتير" : "Invoices",
+                      onTap: () => Get.to(() => const InvoicesPage()),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 3),
-                NewButton(
-                  icon: Icons.person_pin_rounded,
-                  textPositionDown: false,
-                  text: language == 'Arabic' ? "عملاء" : "Customers",
-                  onTap: () => Get.to(() => const CustomersPage()),
-                ),
-                const SizedBox(width: 3),
-                NewButton(
-                  icon: Icons.money, // .point_of_sale,
-                  textPositionDown: false,
-                  text: language == 'Arabic' ? "فواتير" : "Invoices",
-                  onTap: () => Get.to(() => const InvoicesPage()),
-                ),
+                Row(
+                  children: [
+                    NewButton(
+                      icon: Icons.settings,
+                      textPositionDown: false,
+                      text: language == 'Arabic' ? "اعدادات" : "Setting",
+                      onTap: () =>
+                          Get.to(() =>
+                              SettingsPage(validLicense: validLicense)),
+                    ),
+                  ],
+                )
               ],
             ),
-            Row(
-              children: [
-                NewButton(
-                  icon: Icons.settings,
-                  textPositionDown: false,
-                  text: language == 'Arabic' ? "اعدادات" : "Setting",
-                  onTap: () => Get.to(()=> SettingsPage(validLicense: validLicense)),
-                ),
-              ],
-            )
-          ],
+            // )
+          ),
         ),
-        // )
-      ),
-    ),
-  );
+      );
 
-  Widget buildRefreshButton() => Positioned(
-    left: 10,
-    top: 50,
-    child: NewButton(
-      icon: Icons.refresh,
-      iconSize: 24,
-      radius: 24,
-      onTap: () => checkAuthentication(),
-    ),
-  );
+  Widget buildRefreshButton() =>
+      Positioned(
+        left: 10,
+        top: 50,
+        child: NewButton(
+          icon: Icons.refresh,
+          iconSize: 24,
+          radius: 24,
+          onTap: () => checkAuthentication(),
+        ),
+      );
 
   void getVersion() async {
     final pkgVer = Platform.isWindows

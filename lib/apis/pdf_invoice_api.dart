@@ -17,608 +17,6 @@ import 'package:pdf/widgets.dart';
 import '../models/template.dart';
 import 'constants/utils.dart';
 
-class DefaultInvoiceTemp {
-  static Future<Future<File>> generate(
-      Invoice invoice,
-      Customer customer,
-      Setting seller,
-      List<InvoiceLines> invoiceLines,
-      String title,
-      String subTitle,
-      bool isPreview,
-      {bool isEstimate = false}) async {
-    var myTheme = ThemeData.withFont(
-      base: Font.ttf(await rootBundle.load("assets/fonts/Cairo-Regular.ttf")),
-      bold: Font.ttf(await rootBundle.load("assets/fonts/Cairo-Bold.ttf")),
-    );
-    final pdf = Document(theme: myTheme);
-    final showPayMethod = await Utils.payMethod() == 'اظهار' ? true : false;
-    pdf.addPage(MultiPage(
-        margin: const EdgeInsets.all(30),
-        build: (context) => [
-              buildHeader(invoice, customer, seller, title, subTitle, isPreview,
-                  isEstimate),
-              SizedBox(height: 1 * PdfPageFormat.cm),
-              buildInvoice(invoice, invoiceLines),
-              // Divider(),
-              buildTotal(invoice, seller, showPayMethod),
-              buildTerms(seller),
-            ],
-        footer: (context) {
-          return Container(
-              alignment: Alignment.center,
-              child: Text("صفحة ${context.pagesCount}/${context.pageNumber}: ",
-                  textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: PdfColors.black)));
-        }));
-
-    /*return PdfApi.previewDocument(
-        name: '${invoice.invoiceNo}.pdf',
-        pdf: pdf,
-        invoiceMonth: invoice.date.substring(5, 7),
-        invoiceYear: invoice.date.substring(0, 4));*/
-    return PdfApi.previewDocument(invoice: invoice, pdf: pdf);
-  }
-
-  static Widget buildHeader(Invoice invoice, Customer customer, Setting seller,
-          String title, String subTitle, bool isPreview, bool isEstimate) =>
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            buildLogo(seller),
-            buildTitle(invoice, title, subTitle),
-          ]),
-          Divider(),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              buildInvoiceInfo(invoice, title, isPreview, isEstimate),
-              Container(),
-              // buildCustomerAddress(invoice.customer),
-            ],
-          ),
-          SizedBox(height: 1 * PdfPageFormat.cm),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Container(
-                width: 260,
-                color: PdfColors.grey300,
-                child: Text('بيانات المورد',
-                    textAlign: TextAlign.center,
-                    textDirection: TextDirection.rtl,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 10)),
-              ),
-              buildSimpleText(title: 'اسم المورد:', value: seller.seller),
-              buildSimpleText(title: 'الرقم الضريبي:', value: seller.vatNumber),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  buildSimpleText(
-                      title: 'رقم المبنى:', value: seller.buildingNo),
-                  buildSimpleText(title: 'الحي:', value: seller.district),
-                  buildSimpleText(title: 'البلد:', value: seller.country),
-                  buildSimpleText(
-                      title: 'الرقم الإضافي للعنوان:',
-                      value: seller.additionalNo),
-                ]),
-                SizedBox(width: 10),
-                Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                  buildSimpleText(
-                      title: 'رقم الاتصال:', value: seller.cellphone),
-                  buildSimpleText(title: 'الشارع:', value: seller.streetName),
-                  buildSimpleText(title: 'المدينة:', value: seller.city),
-                  buildSimpleText(
-                      title: 'الرمز البريدي:', value: seller.postalCode),
-                ]),
-              ]),
-            ]),
-            SizedBox(width: 10),
-            Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Container(
-                width: 260,
-                color: PdfColors.grey300,
-                child: Text('بيانات العميل',
-                    textAlign: TextAlign.center,
-                    textDirection: TextDirection.rtl,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 10)),
-              ),
-              buildSimpleText(title: 'اسم العميل:', value: customer.name),
-              buildSimpleText(
-                  title: 'الرقم الضريبي:', value: customer.vatNumber),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  buildSimpleText(
-                      title: 'رقم المبنى:', value: customer.buildingNo),
-                  buildSimpleText(title: 'الحي:', value: customer.district),
-                  buildSimpleText(title: 'البلد:', value: customer.country),
-                  buildSimpleText(
-                      title: 'الرقم الإضافي للعنوان:',
-                      value: customer.additionalNo),
-                ]),
-                SizedBox(width: 10),
-                Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                  buildSimpleText(
-                      title: 'رقم الاتصال:', value: customer.contactNumber),
-                  buildSimpleText(title: 'الشارع:', value: customer.streetName),
-                  buildSimpleText(title: 'المدينة:', value: customer.city),
-                  buildSimpleText(
-                      title: 'الرمز البريدي:', value: customer.postalCode),
-                ]),
-              ]),
-            ]),
-          ]),
-        ],
-      );
-
-  static Widget buildCustomerAddress(Invoice invoice, Customer customer) =>
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            customer.buildingNo,
-            textDirection: TextDirection.rtl,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          // Text('customer.address', textDirection: TextDirection.rtl),
-        ],
-      );
-
-  static Widget buildInvoiceInfo(
-      Invoice invoice, String title, bool isPreview, bool isEstimate) {
-    final titles = <String>[
-      title == 'إشعار دائن'
-          ? 'رقم الإشعار'
-          : isEstimate
-              ? 'رقم عرض السعر'
-              : 'رقم الفاتورة',
-      'التاريخ:',
-      // 'تاريخ التوريد:',
-    ];
-    final data = <String>[
-      invoice.invoiceNo,
-      invoice.date,
-      // invoice.supplyDate,
-    ];
-
-    return Column(
-      children: List.generate(titles.length, (index) {
-        final value = data[index];
-        final title = titles[index];
-
-        return buildText(title: title, value: value, width: 200);
-      }),
-    );
-  }
-
-  static Widget buildLogo(Setting seller) => Container(
-      width: seller.logoWidth.toDouble(),
-      height: seller.logoHeight.toDouble(),
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              fit: BoxFit.fill,
-              image: MemoryImage(base64Decode(seller.logo)))));
-
-  static Widget buildSupplierAddress(Setting seller) => Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(seller.seller,
-              textDirection: TextDirection.rtl,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          SizedBox(height: 1 * PdfPageFormat.mm),
-          buildSimpleText(title: "الرقم الضريبي", value: seller.vatNumber),
-        ],
-      );
-
-  static Widget buildTitle(Invoice invoice, String title, String subTitle) =>
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            title,
-            textDirection: TextDirection.rtl,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            subTitle,
-            textDirection: TextDirection.rtl,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          // SizedBox(height: 0.8 * PdfPageFormat.cm),
-        ],
-      );
-
-  static Widget buildInvoice(Invoice invoice, List<InvoiceLines> invoiceLines) {
-    final data = invoiceLines.map((item) {
-      final total = item.qty * item.price;
-      return [
-        '${Utils.format(total)}',
-        '${Utils.formatPercent(0.15 * 100)}',
-        '${Utils.format(item.price / 1.15)}',
-        '${item.qty}',
-        item.productName,
-      ];
-    }).toList();
-
-    return Container(
-        child: Column(children: [
-      Container(
-        padding: const EdgeInsets.all(2),
-        color: PdfColors.grey300,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              width: 2.5 * PdfPageFormat.cm,
-              margin: const EdgeInsets.only(right: 2.25, left: 0),
-              child: Column(children: [
-                Text(
-                  "الإجمالي",
-                  textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: PdfColors.black),
-                ),
-                Text(
-                  "Total",
-                  textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: PdfColors.black),
-                ),
-              ]),
-            ),
-            Container(
-              width: 2 * PdfPageFormat.cm,
-              margin: const EdgeInsets.only(right: 2.25, left: 2.25),
-              child: Column(children: [
-                Text(
-                  "الضريبة",
-                  textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: PdfColors.black),
-                ),
-                Text(
-                  "VAT",
-                  textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: PdfColors.black),
-                ),
-              ]),
-            ),
-            Container(
-              width: 2 * PdfPageFormat.cm,
-              margin: const EdgeInsets.only(right: 2.25, left: 2.25),
-              child: Column(children: [
-                Text(
-                  "السعر",
-                  textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: PdfColors.black),
-                ),
-                Text(
-                  "Price",
-                  textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: PdfColors.black),
-                ),
-              ]),
-            ),
-            Container(
-                width: 2 * PdfPageFormat.cm,
-                margin: const EdgeInsets.only(right: 2.25, left: 2.25),
-                child: Column(children: [
-                  Text(
-                    "الكمية",
-                    textDirection: TextDirection.rtl,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: PdfColors.black),
-                  ),
-                  Text(
-                    "Qty",
-                    textDirection: TextDirection.rtl,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: PdfColors.black),
-                  ),
-                ])),
-            Container(
-                width: 9.5 * PdfPageFormat.cm,
-                margin: const EdgeInsets.only(right: 0, left: 2.25),
-                child: Column(children: [
-                  Text(
-                    "البيان",
-                    textDirection: TextDirection.rtl,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: PdfColors.black),
-                  ),
-                  Text(
-                    "Description",
-                    textDirection: TextDirection.rtl,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: PdfColors.black),
-                  ),
-                ])),
-          ],
-        ),
-      ),
-      ListView.builder(
-          itemCount: data.length,
-          itemBuilder: (context, index) {
-            return Container(
-              // padding: const EdgeInsets.all(4),
-              color: index % 2 == 1 ? PdfColors.grey100 : PdfColors.white,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 2.5 * PdfPageFormat.cm,
-                    margin: const EdgeInsets.only(right: 2.25, left: 2.25),
-                    child: buildPriceText(currency: '', value: data[index][0]),
-                  ),
-                  Container(
-                    width: 1.5 * PdfPageFormat.cm,
-                    margin: const EdgeInsets.only(right: 2.25, left: 2.25),
-                    child: Text(
-                      data[index][1],
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 10),
-                    ),
-                  ),
-                  Container(
-                    width: 2.5 * PdfPageFormat.cm,
-                    margin: const EdgeInsets.only(right: 2.25, left: 2.25),
-                    child: buildPriceText(currency: '', value: data[index][2]),
-                  ),
-                  Container(
-                    width: 2 * PdfPageFormat.cm,
-                    margin: const EdgeInsets.only(right: 2.25, left: 2.25),
-                    child: Text(
-                      data[index][3],
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 10),
-                    ),
-                  ),
-                  Container(
-                    width: 9.5 * PdfPageFormat.cm,
-                    margin: const EdgeInsets.only(right: 0, left: 2.25),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        data[index][4],
-                        textDirection: TextDirection.rtl,
-                        style: const TextStyle(fontSize: 10),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-      Container(height: 1.5, color: PdfColors.black),
-      Container(height: 5, color: PdfColors.white),
-    ]));
-  }
-
-  static Widget buildTotal(
-      Invoice invoice, Setting seller, bool showPayMethod) {
-    const vatPercent = 0.15;
-
-    final netTotal = invoice.total / 1.15;
-    final vat = invoice.totalVat;
-    final total = invoice.total;
-    final qrString = QRBarcodeEncoder.encode(
-      Seller(seller.seller),
-      TaxNumber(seller.vatNumber),
-      InvoiceDate(invoice.date),
-      InvoiceTotalAmount(invoice.total.toStringAsFixed(2)),
-      InvoiceTaxAmount(invoice.totalVat.toStringAsFixed(2)),
-    ).toString();
-
-    return Container(
-      // alignment: Alignment.centerLeft,
-      child: Row(
-        children: [
-          Expanded(
-            flex: 5,
-            child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                buildText(
-                  title: 'الإجمالي الصافي بدون الضريبة',
-                  value: Utils.format(netTotal),
-                  unite: true,
-                ),
-                buildText(
-                  title:
-                      'ضريبة القيمة المضافة ${Utils.formatPercent(vatPercent * 100)} ',
-                  value: Utils.format(vat),
-                  unite: true,
-                ),
-                Divider(),
-                buildText(
-                  title: 'المبلغ المستحق',
-                  titleStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 10,
-                  ),
-                  value: Utils.format(total),
-                  unite: true,
-                ),
-                showPayMethod
-                    ? buildText(
-                        title: 'طريقة الدفع',
-                        titleStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10,
-                        ),
-                        value: invoice.paymentMethod,
-                        unite: true,
-                      )
-                    : Container(),
-              ],
-            ),
-          ),
-          Spacer(flex: 3),
-          Container(
-            height: 100,
-            width: 100,
-            child: BarcodeWidget(
-              barcode: Barcode.qrCode(),
-              data: qrString,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  static Widget buildTerms(Setting setting) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Divider(),
-        buildText(title: 'الشروط والأحكام', value: ''),
-        buildConditionText(text: setting.terms),
-        Column(children: [
-          buildConditionText(text: setting.terms1),
-          // Comment this line @ version 1
-          buildConditionText(text: setting.terms2),
-          // Comment this line @ version 1
-          buildConditionText(text: setting.terms3),
-          // Comment this line @ version 1
-          buildConditionText(text: setting.terms4),
-          // Comment this line @ version 1
-        ]),
-      ],
-    );
-  }
-
-  static Widget buildFooter(Invoice invoice) => Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Divider(),
-          SizedBox(height: 2 * PdfPageFormat.mm),
-          buildSimpleText(
-              title: 'جميع الأسعار تشمل ضريبة القيمة المضافة',
-              value: Utils.formatPercent(0.15 * 100)),
-          // SizedBox(height: 1 * PdfPageFormat.mm),
-          // buildSimpleText(title: 'حسب العقد', value: invoice.supplier.paymentInfo),
-        ],
-      );
-
-  static buildSimpleText({
-    required String title,
-    required String value,
-  }) {
-    final styleTitle = TextStyle(fontWeight: FontWeight.bold, fontSize: 10);
-    const styleValue = TextStyle(fontSize: 10);
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(value, textDirection: TextDirection.rtl, style: styleValue),
-        SizedBox(width: 2 * PdfPageFormat.mm),
-        Text(title, textDirection: TextDirection.rtl, style: styleTitle),
-      ],
-    );
-  }
-
-  static buildText({
-    required String title,
-    required String value,
-    double width = double.infinity,
-    TextStyle? titleStyle,
-    bool unite = false,
-  }) {
-    final style =
-        titleStyle ?? TextStyle(fontWeight: FontWeight.bold, fontSize: 10);
-
-    return Container(
-      width: width,
-      child: Row(
-        children: [
-          Text(value,
-              textDirection: TextDirection.rtl, style: unite ? style : null),
-          Expanded(
-              child:
-                  Text(title, textDirection: TextDirection.rtl, style: style)),
-        ],
-      ),
-    );
-  }
-
-  static buildConditionText({
-    required String text,
-    double width = double.infinity,
-    TextStyle? titleStyle,
-  }) {
-    final style = titleStyle ?? const TextStyle(fontSize: 10);
-
-    return Container(
-      width: width,
-      child: Text('  * $text', textDirection: TextDirection.rtl, style: style),
-    );
-  }
-
-  static buildPriceText({
-    required String value,
-    required String currency,
-    double width = double.infinity,
-    TextStyle? titleStyle,
-  }) {
-    final style = titleStyle ?? const TextStyle(fontSize: 10);
-
-    return Container(
-      width: width,
-      child: Row(
-        children: [
-          Text(currency, textDirection: TextDirection.rtl, style: style),
-          Expanded(
-              child:
-                  Text(value, textDirection: TextDirection.rtl, style: style)),
-        ],
-      ),
-    );
-  }
-}
-
 class InvoiceTemp1 {
   static double mm = PdfPageFormat.mm;
 
@@ -630,8 +28,8 @@ class InvoiceTemp1 {
       int tempId,
       List<TemplateDetails> col) async {
     var myTheme = ThemeData.withFont(
-      base: Font.ttf(await rootBundle.load("assets/fonts/arial.ttf")),
-      bold: Font.ttf(await rootBundle.load("assets/fonts/arialbd.ttf")),
+      base: Font.ttf(await rootBundle.load("assets/fonts/calibri.ttf")),
+      bold: Font.ttf(await rootBundle.load("assets/fonts/calibrib.ttf")),
     );
     final pdf = Document(theme: myTheme);
 
@@ -667,7 +65,9 @@ class InvoiceTemp1 {
       ':',
       '-',
       '/',
-      ' '
+      ' ',
+      'AM',
+      'PM'
     ];
     for (int i = 0; i < number.length; i++) {
       if (number[i] == '0') res += arabic[0];
@@ -686,6 +86,8 @@ class InvoiceTemp1 {
       if (number[i] == '-') res += arabic[13];
       if (number[i] == '/') res += arabic[14];
       if (number[i] == ' ') res += arabic[15];
+      if (number[i] == 'AM') res += arabic[16];
+      if (number[i] == 'PM') res += arabic[17];
     }
     return res;
   }
@@ -711,10 +113,10 @@ class InvoiceTemp1 {
   static Widget qrCode(
       Setting seller, Invoice invoice, List<TemplateDetails> col,
       {double left = 10,
-        double top = 10,
-        double height = 100,
-        double width = 100,
-        int isVisible = 1}) {
+      double top = 10,
+      double height = 100,
+      double width = 100,
+      int isVisible = 1}) {
     final line = col.map((col) {
       return [
         col.tempId,
@@ -742,17 +144,26 @@ class InvoiceTemp1 {
       InvoiceTotalAmount(invoice.total.toStringAsFixed(2)),
       InvoiceTaxAmount(invoice.totalVat.toStringAsFixed(2)),
     ).toString();
-    return isVisible == 0 ? Container() : Container(
-      height: height,
-      width: width,
-      color: PdfColors.white,
-      margin: EdgeInsets.only(left: left, top: top),
-      padding: const EdgeInsets.all(2),
-      child: BarcodeWidget(
-        barcode: Barcode.qrCode(),
-        data: qrString,
-      ),
-    );
+    return isVisible == 0
+        ? Container()
+        : BarcodeWidget(
+            margin: EdgeInsets.only(left: left * mm, top: top * mm),
+            padding: const EdgeInsets.all(4),
+            height: height,
+            width: width,
+            barcode: Barcode.qrCode(errorCorrectLevel: BarcodeQRCorrectionLevel.high),
+            data: qrString,
+            // decoration: BoxDecoration(
+            //   color: PdfColors.white,
+            //   border: Border.all(color: PdfColors.grey600, width: 0.1),
+            //   boxShadow: const [
+            //     BoxShadow(
+            //       color: PdfColors.grey400,
+            //       offset: PdfPoint(0.5, 0.6),
+            //     ),
+            //   ],
+            // ),
+          );
   }
 
   static Widget textSeller(
@@ -890,14 +301,16 @@ class InvoiceTemp1 {
                 style: TextStyle(
                     fontSize: fontSize,
                     fontWeight:
-                    isBold == 1 ? FontWeight.bold : FontWeight.normal))));
+                        isBold == 1 ? FontWeight.bold : FontWeight.normal))));
   }
 
   static Widget textCustomer(
-      Customer table, List<TemplateDetails> col, String colName,
-      {bool isNumber = false,
-      bool rtl = true,
-      }) {
+    Customer table,
+    List<TemplateDetails> col,
+    String colName, {
+    bool isNumber = false,
+    bool rtl = true,
+  }) {
     String text = '';
     double left = 0;
     double top = 0;
@@ -941,34 +354,34 @@ class InvoiceTemp1 {
     }
     switch (colName) {
       case 'customerName':
-        text = isVisible == 0 ? '': table.name;
+        text = isVisible == 0 ? '' : table.name;
         break;
       case 'customerVatNo':
-        text =  isVisible == 0 ? '': table.vatNumber;
+        text = isVisible == 0 ? '' : arabicNumber(table.vatNumber);
         break;
       case 'customerCellphone':
-        text =  isVisible == 0 ? '': table.contactNumber;
+        text = isVisible == 0 ? '' : table.contactNumber;
         break;
       case 'customerBuildingNo':
-        text =  isVisible == 0 ? '': table.buildingNo;
+        text = isVisible == 0 ? '' : table.buildingNo;
         break;
       case 'customerStreet':
-        text = isVisible == 0 ? '': table.streetName;
+        text = isVisible == 0 ? '' : table.streetName;
         break;
       case 'customerDistrict':
-        text = isVisible == 0 ? '': table.district;
+        text = isVisible == 0 ? '' : table.district;
         break;
       case 'customerCity':
-        text = isVisible == 0 ? '': table.city;
+        text = isVisible == 0 ? '' : table.city;
         break;
       case 'customerCountry':
-        text = isVisible == 0 ? '': table.country;
+        text = isVisible == 0 ? '' : table.country;
         break;
       case 'customerZipCode':
-        text = isVisible == 0 ? '': table.postalCode;
+        text = isVisible == 0 ? '' : table.postalCode;
         break;
       case 'customerAdditionalNo':
-        text = isVisible == 0 ? '': table.additionalNo;
+        text = isVisible == 0 ? '' : table.additionalNo;
         break;
       default:
         break;
@@ -1016,14 +429,14 @@ class InvoiceTemp1 {
     return Container(
         width: width,
         height: height,
-        // transform: Matrix4.rotationZ(360/180),
         decoration: BoxDecoration(
             color: pdfColor,
             border: pdfBorderColor == null
                 ? null
                 : Border.all(color: pdfBorderColor)),
         margin: EdgeInsets.only(left: left * mm, top: top * mm),
-        child: Center(
+        child: Align(
+            alignment: Alignment.centerRight,
             child: Text(text,
                 textDirection: rtl ? TextDirection.rtl : TextDirection.ltr,
                 textAlign: TextAlign.center,
@@ -1037,6 +450,9 @@ class InvoiceTemp1 {
       List<TemplateDetails> col, String colName,
       {bool isNumber = false, bool rtl = true}) {
     String text = '';
+    String strMM = '';
+    String strDD = '';
+    String strYYYY = '';
     double left = 0;
     double top = 0;
     double topMargin = 0;
@@ -1049,6 +465,7 @@ class InvoiceTemp1 {
     String borderColor = 'white';
     PdfColor? pdfColor;
     PdfColor? pdfBorderColor;
+    Alignment alignment = Alignment.centerLeft;
     if (isNumber) rtl = false;
     final line = col.map((col) {
       return [
@@ -1079,31 +496,56 @@ class InvoiceTemp1 {
       }
     }
     switch (colName) {
+      case 'customerAdditionalNo': // Todo: reserved for supply date fld
+        strDD = arabicNumber(Utils.formatDayDate(DateTime.parse(table.date)));
+        strMM = arabicNumber(Utils.formatMonthDate(DateTime.parse(table.date)));
+        strYYYY = arabicNumber(Utils.formatYearDate(DateTime.parse(table.date)));
+        text = isVisible == 0 ? '' : '$strYYYY- $strMM- $strDD';
+        alignment = Alignment.centerRight;
+        break;
+      case 'customerZipCode': // Todo: reserved for time fld
+        text = Utils.invoiceTime(printSecond: true);
+        alignment = Alignment.centerRight;
+        break;
       case 'invoiceNo':
-        text = isVisible == 0 ? '' : table.invoiceNo;
+        text = isVisible == 0 ? '' : arabicNumber(table.invoiceNo);
+        alignment = Alignment.centerRight;
         break;
       case 'invoiceDate':
-        text =  isVisible == 0 ? '' :Utils.formatShortDate(DateTime.parse(table.date));
+        strDD = arabicNumber(Utils.formatDayDate(DateTime.parse(table.date)));
+        strMM = arabicNumber(Utils.formatMonthDate(DateTime.parse(table.date)));
+        strYYYY = arabicNumber(Utils.formatYearDate(DateTime.parse(table.date)));
+        text = isVisible == 0 ? '' : '$strYYYY- $strMM- $strDD';
+        alignment = Alignment.centerRight;
         break;
       case 'totalDiscount':
-        text =  isVisible == 0 ? '' :Utils.formatAmount(table.totalDiscount);
-        topMargin = 18 * (invoiceLines.length - 1);
+        text =
+            isVisible == 0 ? '' : Utils.formatArabicAmount(table.totalDiscount);
+        // topMargin = 18 * (invoiceLines.length - 1);
         break;
       case 'totalAmount':
-        text =  isVisible == 0 ? '' :Utils.formatAmount(table.total - table.totalVat);
-        topMargin = 18 * (invoiceLines.length - 1);
+        text = isVisible == 0
+            ? ''
+            : Utils.formatArabicAmount(table.total - table.totalVat);
+        // topMargin = 18 * (invoiceLines.length - 1);
         break;
       case 'totalNetAmount':
-        text =  isVisible == 0 ? '' :Utils.formatAmount(table.total);
-        topMargin = 18 * (invoiceLines.length - 1);
+        text = isVisible == 0 ? '' : Utils.formatArabicAmount(table.total);
+        // topMargin = 18 * (invoiceLines.length - 1);
         break;
       case 'totalVat':
-        text =  isVisible == 0 ? '' :Utils.formatAmount(table.totalVat);
-        topMargin = 18 * (invoiceLines.length - 1);
+        text = isVisible == 0 ? '' : Utils.formatArabicAmount(table.totalVat);
+        // topMargin = 18 * (invoiceLines.length - 1);
         break;
       case 'sumOfAmount':
-        text =  isVisible == 0 ? '' :Utils.numToWord(Utils.formatAmount(table.total));
-        topMargin = 18 * (invoiceLines.length - 1);
+        text = isVisible == 0
+            ? ''
+            : Utils.formatArabicAmount(table.total - table.totalVat);
+        // topMargin = 18 * (invoiceLines.length - 1);
+        // text = isVisible == 0
+        //     ? ''
+        //     : Utils.numToWord(Utils.formatAmount(table.total));
+        // topMargin = 18 * (invoiceLines.length - 1);
         break;
       default:
         break;
@@ -1112,8 +554,8 @@ class InvoiceTemp1 {
       case 'white':
         pdfColor = PdfColors.white;
         break;
-      case 'black':
-        pdfColor = PdfColors.black;
+      case 'yellow':
+        pdfColor = PdfColors.yellow;
         break;
       case 'grey':
         pdfColor = PdfColors.grey;
@@ -1158,14 +600,16 @@ class InvoiceTemp1 {
                 ? null
                 : Border.all(color: pdfBorderColor)),
         margin: EdgeInsets.only(left: left * mm, top: (top * mm) + topMargin),
-        child: Center(
+        child: Align(
+            alignment: alignment,
             child: Text(text,
-                textDirection: rtl ? TextDirection.rtl : TextDirection.ltr,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: fontSize,
-                    fontWeight:
-                        isBold == 1 ? FontWeight.bold : FontWeight.normal))));
+                    textDirection: rtl ? TextDirection.rtl : TextDirection.ltr,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight: isBold == 1
+                            ? FontWeight.bold
+                            : FontWeight.normal))));
   }
 
   static Widget textInvoiceLines(
@@ -1221,13 +665,14 @@ class InvoiceTemp1 {
       return [
         col.barcode,
         col.productName,
-        col.qty,
-        Utils.formatAmount(priceWithoutVat),
-        Utils.formatAmount(col.discount),
-        Utils.formatAmount(vat * 100),
-        Utils.formatAmount(lineVat),
-        Utils.formatAmount(totalWithoutVat),
-        Utils.formatAmount(lineNet),
+        Utils.formatArabicAmount(col.qty),
+        Utils.formatArabicAmount(priceWithoutVat),
+        Utils.formatArabicAmount(col.discount),
+        Utils.formatArabicAmount(vat * 100),
+        Utils.formatArabicAmount(lineVat),
+        Utils.formatArabicAmount(totalWithoutVat),
+        Utils.formatArabicAmount(lineNet),
+        col.unit,
       ];
     }).toList();
 
@@ -1279,36 +724,39 @@ class InvoiceTemp1 {
               text = isVisible == 0 ? '' : invoiceLine[index][0].toString();
               break;
             case 'productName':
-              text =  isVisible == 0 ? '' :invoiceLine[index][1].toString();
+              text = isVisible == 0 ? '' : invoiceLine[index][1].toString();
               break;
             case 'qty':
-              text =  isVisible == 0 ? '' :invoiceLine[index][2].toString();
+              text = isVisible == 0 ? '' : invoiceLine[index][2].toString();
               break;
             case 'price':
-              text =  isVisible == 0 ? '' :invoiceLine[index][3].toString();
+              text = isVisible == 0 ? '' : invoiceLine[index][3].toString();
               break;
             case 'discount':
-              text =  isVisible == 0 ? '' :invoiceLine[index][4].toString();
+              text = isVisible == 0 ? '' : invoiceLine[index][4].toString();
               break;
             case 'vatLinePercent':
-              text =  isVisible == 0 ? '' :invoiceLine[index][5].toString();
+              text = isVisible == 0 ? '' : invoiceLine[index][5].toString();
               break;
             case 'vatLineAmount':
-              text =  isVisible == 0 ? '' :invoiceLine[index][6].toString();
+              text = isVisible == 0 ? '' : invoiceLine[index][6].toString();
               break;
             case 'totalLineAmount':
-              text =  isVisible == 0 ? '' :invoiceLine[index][7].toString();
+              text = isVisible == 0 ? '' : invoiceLine[index][7].toString();
               break;
             case 'netLineAmount':
-              text =  isVisible == 0 ? '' :invoiceLine[index][8].toString();
+              text = isVisible == 0 ? '' : invoiceLine[index][8].toString();
+              break;
+            case 'unit':
+              text = isVisible == 0 ? '' : invoiceLine[index][9].toString();
               break;
             default:
               break;
           }
-          double extraTop = index + 1.5;
+          double extraTop = index + 1;
           switch (index) {
             case 1:
-              extraTop = 2.5;
+              extraTop = 1;
               break;
             case 2:
               extraTop = 3;
@@ -1325,7 +773,6 @@ class InvoiceTemp1 {
           return Container(
               width: width,
               height: height,
-              // transform: Matrix4.rotationZ(360/180),
               decoration: BoxDecoration(
                   color: pdfColor,
                   border: pdfBorderColor == null
@@ -1333,7 +780,8 @@ class InvoiceTemp1 {
                       : Border.all(color: pdfBorderColor)),
               margin: EdgeInsets.only(
                   left: left * mm, top: index > 0 ? extraTop : top * mm),
-              child: Center(
+              child: Align(
+                  alignment: colName == 'productName' ? Alignment.centerRight : Alignment.center,
                   child: Text(text,
                       textDirection:
                           rtl ? TextDirection.rtl : TextDirection.ltr,
@@ -1370,7 +818,10 @@ class InvoiceTemp1 {
         qrCode(setting, invoice, col),
         textSeller(setting, col, 'sellerName'),
         textCustomer(customer, col, 'customerName'),
+        textCustomer(customer, col, 'customerStreet'),
         textInvoice(invoice, lines, col, 'invoiceNo'),
+        textInvoice(invoice, lines, col, 'customerZipCode'), // Todo: reserved for time fld
+        textInvoice(invoice, lines, col, 'customerAdditionalNo'), // Todo: reserved for supply date fld
         textCustomer(customer, col, 'customerCity'),
         textInvoice(invoice, lines, col, 'invoiceDate'),
         textCustomer(customer, col, 'customerVatNo'),

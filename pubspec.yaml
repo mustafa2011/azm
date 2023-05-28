@@ -36,7 +36,6 @@ dependencies:
   whatsapp_share2: ^2.0.2
   pdfx: ^2.3.0
   font_awesome_flutter: ^10.4.0
-  package_info_plus: ^1.4.2
   number_to_word_arabic: ^0.0.8
   package_info: ^2.0.2
   horizontal_data_table: ^4.2.0
@@ -45,25 +44,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-#  msix: ^3.3.2
-
-
-#msix_config:
-#  display_name: Fatoora
-#  publisher_display_name: Fatoora
-#  identity_name: com.alwadeh.azm
-#  msix_version: 1.0.0.0
-#  logo_path: C:\Users\Mustafa\StudioProjects\fatoora\assets\images\logo_light.png
-#  output_name: Fatoora
-#  certificate_path: C:\Certificates\CERTIFICATE.pfx
-#  certificate_password: 123456
-#  icons_background_color: transparent
-#  output_path: C:\Users\mustafa\Desktop\FatooraSetup
-#  assets_directory_path: C:\Users\Mustafa\StudioProjects\fatoora\assets
-
-#flutter_icons:
-#  ios: true
-#  image_path: "assets/images/logo_light.png"
 
 flutter:
   uses-material-design: true
@@ -78,6 +58,10 @@ flutter:
    - assets/fonts/Tahoma.ttf
    - assets/resources/capabilities.json
   fonts:
+   - family: Calibri
+     fonts:
+       - asset: assets/fonts/calibri.ttf
+       - asset: assets/fonts/calibrib.ttf
    - family: Cairo
      fonts:
        - asset: assets/fonts/Cairo-Regular.ttf

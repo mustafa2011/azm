@@ -17,17 +17,66 @@ class Utils {
 
   static formatDate(DateTime date) =>
       DateFormat('yyyy-MM-dd HH:mm').format(date);
+  static formatAMPMTime(DateTime date) => DateFormat('a').format(date);
+  static formatHrTime(DateTime date) => DateFormat('HH').format(date);
+  static formatMinTime(DateTime date) => DateFormat('mm').format(date);
+  static formatSecTime(DateTime date) => DateFormat('ss').format(date);
+  static formatDayDate(DateTime date) => DateFormat('dd').format(date);
+  static formatMonthDate(DateTime date) => DateFormat('MM').format(date);
+  static formatYearDate(DateTime date) => DateFormat('yyyy').format(date);
 
   static formatTime(DateTime date) => DateFormat('HH:mm').format(date);
 
   static formatShortDateRtl(DateTime date) =>
       DateFormat('yyyy-MM-dd').format(date);
 
-  static formatShortDate(DateTime date) =>
-      DateFormat('dd-MM-yyyy').format(date);
-
+  static formatShortDate(DateTime date) => DateFormat('dd-MM-yyyy').format(date);
+  static formatShortTime(DateTime date) => DateFormat('HH:mm:ss a').format(date);
   static format(num price) => NumberFormat("#,##0.00 $C").format(price);
   static formatAmount(num price) => NumberFormat("#,##0.00").format(price);
+  static formatArabicAmount(num price) => arabicNumber(NumberFormat("##0").format(price).toString());
+  static String arabicNumber(String number) {
+    String res = '';
+
+    final arabic = [
+      '٠',
+      '١',
+      '٢',
+      '٣',
+      '٤',
+      '٥',
+      '٦',
+      '٧',
+      '٨',
+      '٩',
+      '،',
+      ',',
+      ':',
+      ' -',
+      '/',
+      ' '
+    ];
+    for (int i = 0; i < number.length; i++) {
+      if (number[i] == '0') res += arabic[0];
+      if (number[i] == '1') res += arabic[1];
+      if (number[i] == '2') res += arabic[2];
+      if (number[i] == '3') res += arabic[3];
+      if (number[i] == '4') res += arabic[4];
+      if (number[i] == '5') res += arabic[5];
+      if (number[i] == '6') res += arabic[6];
+      if (number[i] == '7') res += arabic[7];
+      if (number[i] == '8') res += arabic[8];
+      if (number[i] == '9') res += arabic[9];
+      if (number[i] == '.') res += arabic[10];
+      if (number[i] == ',') res += arabic[11];
+      if (number[i] == ':') res += arabic[12];
+      if (number[i] == '-') res += arabic[13];
+      if (number[i] == '/') res += arabic[14];
+      if (number[i] == ' ') res += arabic[15];
+    }
+    return res;
+  }
+
   static formatItemCode(int itemCode) => NumberFormat("ITM0000").format(itemCode);
 
   static format00(int intNumber) => NumberFormat("00").format(intNumber);
@@ -220,10 +269,12 @@ class Utils {
     if (userSetting.isNotEmpty) {
       int? intCode = int.parse(userSetting[0].cellphone) +
           userSetting[0].id! +
-          ((DateTime.parse(userSetting[0].startDateTime)).month + 1) +
+          ((DateTime.parse(userSetting[0].startDateTime)).month + 11) +
           DateTime.now().year;
       String validationCode = toHex(intCode);
       String activationCode = userSetting[0].activationCode;
+      debugPrint("validationCode code: $validationCode");
+      debugPrint("activation code: $activationCode");
       if (validationCode == activationCode) {
         result = true;
       }
@@ -254,4 +305,19 @@ class Utils {
 
   static bool isDefaultProject = false;
 
+  static String invoiceTime({bool printSecond = true}) {
+    DateTime date = DateTime.now();
+    String second = arabicNumber(date.second.toString().padLeft(2, '0'));
+    int hrs = date.hour;
+    String type = 'AM';
+    if(hrs>12){
+      hrs = hrs-12;
+      type = 'PM';
+    }
+    String strHrs = Utils.format00(hrs);
+    String minute = arabicNumber(DateFormat('mm').format(date));
+    String hour = arabicNumber(DateFormat(strHrs).format(date));
+    String time = printSecond ? '$second: $minute: $hour $type' : '$minute: $hour $type';
+    return time;
+  }
 }

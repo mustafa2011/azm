@@ -633,7 +633,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ],
                     ),
                   ),
-                  const PopupMenuItem<int>(
+                  /*const PopupMenuItem<int>(
                     value: 7,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -686,7 +686,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ],
                     ),
-                  ),
+                  ),*/
                   const PopupMenuItem<int>(
                       height: 1, enabled: false, child: Divider(thickness: 1)),
                   const PopupMenuItem<int>(

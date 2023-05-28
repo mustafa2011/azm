@@ -489,76 +489,43 @@ CREATE TABLE $tableInvoiceLines (
     for (int j = 0; j < totalTemp; j++) {
       batch.execute("$insertTemplate('invoiceTemp${j + 1}')");
       batch.execute("$insertValues(${j + 1}, 'sellerName',0,0,50,13,10,1,0)");
-      batch
-          .execute("$insertValues(${j + 1}, 'sellerVatNo',0,0,120,13,8.5,1,0)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'sellerCellphone',0,0,120,13,8.5,1,0)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'sellerBuildingNo',0,0,50,13,8.5,1,0)");
-      batch
-          .execute("$insertValues(${j + 1}, 'sellerStreet',0,0,50,13,8.5,1,0)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'sellerDistrict',0,0,50,13,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'sellerVatNo',0,0,120,13,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'sellerCellphone',0,0,120,13,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'sellerBuildingNo',0,0,50,13,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'sellerStreet',0,0,0,13,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'sellerDistrict',0,0,50,13,8.5,1,0)");
       batch.execute("$insertValues(${j + 1}, 'sellerCity',0,0,50,13,8.5,1,0)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'sellerCountry',0,0,50,13,8.5,1,0)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'sellerZipCode',0,0,50,13,8.5,1,0)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'sellerAdditionalNo',0,0,50,13,8.5,1,0)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'customerName',92.5,25,170,13,10,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'customerCellphone',0,0,0,13,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'customerBuildingNo',0,0,50,13,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'customerStreet',0,0,50,13,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'customerDistrict',0,0,50,13,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'customerCity',98.5,25,170,13,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'customerCountry',0,0,50,13,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'customerZipCode',0,0,50,13,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'customerAdditionalNo',0,0,50,13,8.5,1,1)");
-      batch
-          .execute("$insertValues(${j + 1}, 'invoiceNo',89,139,89,13,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'invoiceDate',96,139,89,13,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'barcode',125.5,176,43,14,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'productName',125.5,133,116,14,8.5,1,1)");
-      batch.execute("$insertValues(${j + 1}, 'qty',125.5,120,32.5,14,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'price',125.5,105.5,37,14,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'discount',125.5,93,32,14,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'customerVatNo',104,42,105,13,8.5,1,1)");
-      batch.execute("$insertValues(${j + 1}, 'unit',0,0,50,12,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'vatLinePercent',125.5,60,32.5,14,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'vatLineAmount',125.5,44,40,14,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'totalLineAmount',125.5,73,50,14,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'netLineAmount',125.5,24,50,14,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'totalDiscount',145,26,300,14,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'totalAmount',139,26,300,14,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'totalNetAmount',157,26,300,14,8.5,1,1)");
-      batch
-          .execute("$insertValues(${j + 1}, 'totalVat',151,26,300,14,8.5,1,1)");
-      batch.execute(
-          "$insertValues(${j + 1}, 'sumOfAmount',162.5,26,460,14,8.5,1,1)");
-      batch.execute("$insertValues(${j + 1}, 'qrCode',20.5,52,93,93,8.5,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'sellerCountry',0,0,50,13,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'sellerZipCode',0,0,50,13,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'sellerAdditionalNo',0,0,50,12,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'customerName',48,17,443.5,12,10,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'customerCellphone',0,0,0,12,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'customerBuildingNo',0,0,50,12,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'customerStreet',58.5,17,390,12,10,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'customerDistrict',0,0,50,12,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'customerCity',98.5,25,170,12,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'customerCountry',0,0,50,12,8.5,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'customerZipCode',42.2,50,80,12,9,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'customerAdditionalNo',42.2,3,70,12,9,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'invoiceNo',42.2,143,70,12,9,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'invoiceDate',42.2,108.7,70,12,9,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'barcode',5,0,43,12,11,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'productName',70.5,175.5,40.5,12,11,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'qty',70.5,123,40,12,11,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'price',70.5,138,52,12,11,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'discount',0,0,32,12,11,1,0)");
+      batch.execute("$insertValues(${j + 1}, 'customerVatNo',53.5,132,105,12,10,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'unit',70.5,158,48,12,11,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'vatLinePercent',70.5,68,55,12,11,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'vatLineAmount',70.5,51,44,12,11,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'totalLineAmount',70.5,89,94,12,11,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'netLineAmount',70.5,17.5,90,12,11,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'totalDiscount',139.3,59.5,100,14,10,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'totalAmount',134.9,59.5,100,14,10,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'totalNetAmount',154,59.5,100,14,10,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'totalVat',149,59.5,100,14,10,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'sumOfAmount',144,59.5,100,14,10,1,1)");
+      batch.execute("$insertValues(${j + 1}, 'qrCode',134.5,24,70,70,10,1,1)");
     }
   }
 

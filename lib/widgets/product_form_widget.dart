@@ -110,4 +110,5 @@ class ProductFormWidget extends StatelessWidget {
             price == null || price == '' ? 'يجب إدخال سعر المنتج' : null,
         onChanged: (price) => onChangedPrice(num.parse(price)),
       );
+
 }
