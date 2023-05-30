@@ -449,9 +449,10 @@ class InvoiceTemp1 {
         isVisible = int.parse(line[i][10].toString());
       }
     }
-    strDD = Utils.arabicNumber(table.date.split('-')[0]);
-    strMM = Utils.arabicNumber(table.date.split('-')[1]);
-    strYYYY = Utils.arabicNumber(table.date.split('-')[2]);
+    String onlyDate = table.date.split(' ')[0];
+    strYYYY = Utils.arabicNumber(onlyDate.split('-')[0]);
+    strMM = Utils.arabicNumber(onlyDate.split('-')[1]);
+    strDD = Utils.arabicNumber(onlyDate.split('-')[2]);
     switch (colName) {
       case 'customerAdditionalNo': // Todo: reserved for supply date fld
         text = isVisible == 0 ? '' : '$strYYYY- $strMM- $strDD';

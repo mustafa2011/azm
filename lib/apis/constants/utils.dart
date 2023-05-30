@@ -295,11 +295,9 @@ class Utils {
 
   static String invoiceTime(String date,{bool printSecond = true}) {
     String strTime = date.split(' ')[1];
-
-    String hour = arabicNumber(strTime.split(':')[0]);
     String minute = arabicNumber(strTime.split(':')[1]);
     String second = arabicNumber(strTime.split(':')[2]);
-    int hrs = int.parse(hour);
+    int hrs = int.parse(strTime.split(':')[0]);
     String type = 'AM';
     if(hrs>12){
       hrs = hrs-12;
@@ -307,8 +305,8 @@ class Utils {
     }else if(hrs==12){
       type='PM';
     }
-    String strHrs = Utils.format00(hrs);
-    String time = printSecond ? '$second: $minute: $strHrs $type' : '$minute: $strHrs $type';
+    String hour = arabicNumber(Utils.format00(hrs));
+    String time = printSecond ? '$second: $minute: $hour $type' : '$minute: $hour $type';
     return time;
   }
 }

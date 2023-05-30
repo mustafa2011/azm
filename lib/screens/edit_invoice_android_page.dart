@@ -1831,14 +1831,15 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
   );
 
   _selectDate() async {
-    String invoiceTime = Utils.invoiceTime(_date.text);
+    String invoiceTime = _date.text.split(' ')[1];
+    print(invoiceTime);
     DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime(2021),
         lastDate: DateTime(2055));
     if (picked != null) {
-      setState(() => _date.text = '${Utils.formatDate(picked).toString()} $invoiceTime');
+      setState(() => _date.text = '${Utils.formatShortDate(picked).toString()} $invoiceTime');
     }
   }
 
