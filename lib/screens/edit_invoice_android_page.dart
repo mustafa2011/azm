@@ -1832,7 +1832,6 @@ class _AddEditInvoiceAndroidPageState extends State<AddEditInvoiceAndroidPage> {
 
   _selectDate() async {
     String invoiceTime = _date.text.split(' ')[1];
-    print(invoiceTime);
     DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),

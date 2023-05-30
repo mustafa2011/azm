@@ -566,7 +566,7 @@ class _RegisterState extends State<Register> {
       setState(() {
         activationCode = toHex(int.parse(cellphone) +
             newId +
-            (DateTime.now().month + 1) +
+            (DateTime.now().month + 11) +
             DateTime.now().year);
         startDateTime = DateTime.now().toString();
       });

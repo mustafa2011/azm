@@ -105,7 +105,8 @@ class InvoiceTemp1 {
             padding: const EdgeInsets.all(4),
             height: height,
             width: width,
-            barcode: Barcode.qrCode(errorCorrectLevel: BarcodeQRCorrectionLevel.high),
+            barcode: Barcode.qrCode(
+                errorCorrectLevel: BarcodeQRCorrectionLevel.high),
             data: qrString,
             // decoration: BoxDecoration(
             //   color: PdfColors.white,
@@ -555,13 +556,12 @@ class InvoiceTemp1 {
         child: Align(
             alignment: alignment,
             child: Text(text,
-                    textDirection: rtl ? TextDirection.rtl : TextDirection.ltr,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: fontSize,
-                        fontWeight: isBold == 1
-                            ? FontWeight.bold
-                            : FontWeight.normal))));
+                textDirection: rtl ? TextDirection.rtl : TextDirection.ltr,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: fontSize,
+                    fontWeight:
+                        isBold == 1 ? FontWeight.bold : FontWeight.normal))));
   }
 
   static Widget textInvoiceLines(
@@ -733,7 +733,9 @@ class InvoiceTemp1 {
               margin: EdgeInsets.only(
                   left: left * mm, top: index > 0 ? extraTop : top * mm),
               child: Align(
-                  alignment: colName == 'productName' ? Alignment.centerRight : Alignment.center,
+                  alignment: colName == 'productName'
+                      ? Alignment.centerRight
+                      : Alignment.center,
                   child: Text(text,
                       textDirection:
                           rtl ? TextDirection.rtl : TextDirection.ltr,
@@ -748,32 +750,30 @@ class InvoiceTemp1 {
 
   static Widget buildPage(Setting setting, Customer customer, Invoice invoice,
       List<InvoiceLines> lines, int tempId, List<TemplateDetails> col) {
-    return Container(
-      width: 600,
-      height: 790,
-      margin: const EdgeInsets.all(0),
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              fit: BoxFit.fill,
-              image: MemoryImage(base64Decode(tempId == 1
-                  ? setting.invoiceTemp1
-                  : tempId == 2
-                      ? setting.invoiceTemp2
-                      : tempId == 3
-                          ? setting.invoiceTemp3
-                          : tempId == 4
-                              ? setting.invoiceTemp4
-                              : tempId == 5
-                                  ? setting.invoiceTemp5
-                                  : setting.invoiceTemp1)))),
+    final backgroundImage = MemoryImage(base64Decode(tempId == 1
+        ? setting.invoiceTemp1
+        : tempId == 2
+            ? setting.invoiceTemp2
+            : tempId == 3
+                ? setting.invoiceTemp3
+                : tempId == 4
+                    ? setting.invoiceTemp4
+                    : tempId == 5
+                        ? setting.invoiceTemp5
+                        : setting.invoiceTemp1));
+    return FullPage(
+      ignoreMargins: true,
       child: Stack(children: [
+        Image(backgroundImage),
         qrCode(setting, invoice, col),
         textSeller(setting, col, 'sellerName'),
         textCustomer(customer, col, 'customerName'),
         textCustomer(customer, col, 'customerStreet'),
         textInvoice(invoice, lines, col, 'invoiceNo'),
-        textInvoice(invoice, lines, col, 'customerZipCode'), // Todo: reserved for time fld
-        textInvoice(invoice, lines, col, 'customerAdditionalNo'), // Todo: reserved for supply date fld
+        textInvoice(invoice, lines, col, 'customerZipCode'),
+        // reserved for time fld
+        textInvoice(invoice, lines, col, 'customerAdditionalNo'),
+        // reserved for supply date fld
         textCustomer(customer, col, 'customerCity'),
         textInvoice(invoice, lines, col, 'invoiceDate'),
         textCustomer(customer, col, 'customerVatNo'),
@@ -795,6 +795,56 @@ class InvoiceTemp1 {
         textInvoice(invoice, lines, col, 'sumOfAmount'),
       ]),
     );
+    /*return Container(
+      width: 600,
+      height: 790,
+      margin: const EdgeInsets.all(0),
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              fit: BoxFit.fill,
+              image: MemoryImage(base64Decode(tempId == 1
+                  ? setting.invoiceTemp1
+                  : tempId == 2
+                      ? setting.invoiceTemp2
+                      : tempId == 3
+                          ? setting.invoiceTemp3
+                          : tempId == 4
+                              ? setting.invoiceTemp4
+                              : tempId == 5
+                                  ? setting.invoiceTemp5
+                                  : setting.invoiceTemp1)))),
+      child: Stack(children: [
+        Image(image),
+        qrCode(setting, invoice, col),
+        textSeller(setting, col, 'sellerName'),
+        textCustomer(customer, col, 'customerName'),
+        textCustomer(customer, col, 'customerStreet'),
+        textInvoice(invoice, lines, col, 'invoiceNo'),
+        textInvoice(invoice, lines, col, 'customerZipCode'),
+        // Todo: reserved for time fld
+        textInvoice(invoice, lines, col, 'customerAdditionalNo'),
+        // Todo: reserved for supply date fld
+        textCustomer(customer, col, 'customerCity'),
+        textInvoice(invoice, lines, col, 'invoiceDate'),
+        textCustomer(customer, col, 'customerVatNo'),
+        textInvoiceLines(lines, col, 'barcode'),
+        textInvoiceLines(lines, col, 'productName'),
+        textInvoiceLines(lines, col, 'qty'),
+        textInvoiceLines(lines, col, 'price'),
+        textInvoiceLines(lines, col, 'discount'),
+        textInvoiceLines(lines, col, 'barcode'),
+        textInvoiceLines(lines, col, 'unit'),
+        textInvoiceLines(lines, col, 'vatLinePercent'),
+        textInvoiceLines(lines, col, 'vatLineAmount'),
+        textInvoiceLines(lines, col, 'totalLineAmount'),
+        textInvoiceLines(lines, col, 'netLineAmount'),
+        textInvoice(invoice, lines, col, 'totalAmount'),
+        textInvoice(invoice, lines, col, 'totalDiscount'),
+        textInvoice(invoice, lines, col, 'totalVat'),
+        textInvoice(invoice, lines, col, 'totalNetAmount'),
+        textInvoice(invoice, lines, col, 'sumOfAmount'),
+      ]),
+    );*/
   }
 
   static Widget buildInvoice(Invoice invoice, List<InvoiceLines> line) {
